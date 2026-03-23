@@ -236,7 +236,7 @@ const COURSE_DATA = [
   {
     "id": 1,
     "week": 1,
-    "title": "Box modeling « Fortiche »",
+    "title": "Bo modeling « Fortiche »",
     "description": "Introduction au hardsurface stylisé avec une topologie propre.",
     "category": "modeling",
     "objective": "Créer un asset hardsurface stylisé détaillé (weapons, batiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé.",

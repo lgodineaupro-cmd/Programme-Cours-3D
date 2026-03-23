@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Éditeur — 3D Masterclass Syllabus</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8f1e0;
+        color: #4a3426;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234a3426' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f8f1e0; }
+    ::-webkit-scrollbar-thumb { background: #cfa848; border-radius: 4px; border: 2px solid #f8f1e0; }
+    ::-webkit-scrollbar-thumb:hover { background: #4a3426; }
+    @keyframes fadeSlideIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .animate-fade-slide { animation: fadeSlideIn 0.4s ease-out; }
+    .banner-gradient {
+        background: linear-gradient(180deg, #e0d1bc 0%, #eaddcf 50%, rgba(248,241,224,0) 100%);
+        border-radius: 1rem; padding: 2rem 2rem 2.5rem 2rem; margin: 0 0 1.5rem 0;
+    }
+    /* Inline-editing hover cues */
+    [contenteditable] { cursor: text; transition: outline 0.12s, background-color 0.12s; border-radius: 5px; }
+    [contenteditable]:hover  { outline: 1.5px dashed rgba(207,168,72,0.7); outline-offset: 4px; }
+    [contenteditable]:focus  { outline: 2px solid #cfa848 !important; outline-offset: 4px; background-color: rgba(207,168,72,0.04); }
+    /* Delete button: visible only on row hover */
+    .del-btn { opacity: 0; transition: opacity 0.15s; }
+    .hover-group:hover .del-btn { opacity: 1; }
+    /* Inline tool-add input */
+    .tool-input {
+        display: none; padding: 4px 10px; border-radius: 6px;
+        border: 1.5px dashed #cfa848; background: rgba(207,168,72,0.06);
+        font-size: 0.875rem; color: #4a3426; outline: none; width: 110px;
+        font-family: 'Inter', sans-serif;
+    }
+    .tool-input:focus { border-style: solid; background: rgba(207,168,72,0.1); }
+    /* Week / category micro-controls */
+    .meta-input {
+        background: transparent; border: none;
+        border-bottom: 1.5px solid rgba(207,168,72,0.4);
+        outline: none; color: rgba(74,52,38,0.55);
+        font-family: 'Inter', sans-serif; font-size: 0.875rem;
+        transition: border-color 0.15s;
+    }
+    .meta-input:focus { border-bottom-color: #cfa848; color: #4a3426; }
+    /* Save-status pill */
+    .spill { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid; transition:all 0.2s; }
+    .s-idle   { background:rgba(207,168,72,0.12); color:#cfa848;  border-color:rgba(207,168,72,0.45); }
+    .s-dirty  { background:rgba(207,168,72,0.15); color:#b8922e;  border-color:#b8922e; }
+    .s-saving { background:rgba(207,168,72,0.15); color:#cfa848;  border-color:#cfa848; }
+    .s-saved  { background:rgba(61,148,100,0.12); color:#3d9464;  border-color:#3d9464; }
+    .s-error  { background:rgba(224,90,78,0.12);  color:#e05a4e;  border-color:#e05a4e; }
+</style>
+<script>tailwind.config = { theme: { extend: {} } }</script>
+</head>
+<body class="bg-[#f8f1e0] text-[#4a3426] min-h-screen">
+
+<!-- ════ NAVBAR — same visual as index.html ════ -->
+<header class="sticky top-0 z-50 bg-[#4a3426] border-b-4 border-[#cfa848] shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-[#cfa848] p-2 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+            </div>
+            <div>
+                <h1 class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
+                <span class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Éditeur de Syllabus</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="saveStatus" class="spill s-idle">Chargement…</span>
+            <button onclick="saveAll()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all duration-200 border border-[#b8922e] shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5 text-sm text-[#4a3426] font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Sauvegarder
+            </button>
+            <a href="index.html" target="_blank" class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30 text-sm text-[#f8f1e0] font-medium hover:border-[#cfa848] transition-colors" style="text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Voir le syllabus
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ════ MAIN — identical grid to index.html ════ -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+
+        <!-- Sidebar (mirrors index.html sidebar exactly) -->
+        <aside class="md:col-span-4 lg:col-span-3 space-y-4">
+            <div class="flex items-center justify-between mb-4 px-1">
+                <h2 class="text-[#4a3426]/60 text-sm font-bold uppercase tracking-wider">Timeline</h2>
+                <span id="module-counter" class="text-xs bg-[#eaddcf] text-[#4a3426] font-medium px-2 py-0.5 rounded-full border border-[#cfa848]/20">–/–</span>
+            </div>
+            <button id="scroll-up-btn" onclick="paginateModules(-1)" class="w-full flex justify-center items-center py-2 rounded-xl border border-[#eaddcf] bg-white hover:bg-[#fdf7ec] hover:border-[#cfa848] text-[#4a3426]/40 hover:text-[#cfa848] transition-all duration-200 shadow-sm hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            </button>
+            <div id="module-list" class="space-y-3"></div>
+            <button id="scroll-down-btn" onclick="paginateModules(1)" class="w-full flex justify-center items-center py-2 rounded-xl border border-[#eaddcf] bg-white hover:bg-[#fdf7ec] hover:border-[#cfa848] text-[#4a3426]/40 hover:text-[#cfa848] transition-all duration-200 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button onclick="addModule()" class="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-[#cfa848]/30 text-[#4a3426]/40 hover:border-[#cfa848] hover:text-[#cfa848] transition-all duration-200 text-sm font-medium mt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nouveau module
+            </button>
+        </aside>
+
+        <!-- Main white card (same as index.html) -->
+        <section class="md:col-span-8 lg:col-span-9">
+            <div class="bg-white border border-[#eaddcf] rounded-3xl p-6 md:p-8 min-h-[800px] shadow-[0_20px_40px_-10px_rgba(74,52,38,0.1)] relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-[#cfa848]/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-[#4a3426]/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div id="module-detail" class="relative z-10">
+                    <div class="flex flex-col items-center justify-center h-64 text-[#4a3426]/30 gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity:.25"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <p class="text-sm">Sélectionnez un module dans la timeline pour l'éditer</p>
+                    </div>
+                </div>
+            </div>
+            <footer class="mt-8 text-center text-[#4a3426]/40 text-sm">
+                <p>Éditeur — modifications sauvegardées directement dans <strong>index.html</strong></p>
+            </footer>
+        </section>
+    </div>
+</main>
+
+<script>
+// ════ ICONS (identical to index.html) ════════════════════════════════════════
+const ICONS = {
+    box:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>`,
+    palette:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>`,
+    repeat:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`,
+    layers:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+    briefcase:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+    shirt:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>`,
+    user:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    scanFace:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>`,
+    cpu:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>`,
+    chevronRight:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
+    penTool:`<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></svg>`,
+    trophy:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
+    checkCircle:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>`,
+    calendar:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>`,
+    trash:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 13.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+    upload:`<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>`
+};
+
+function getModuleIcon(category, title) {
+    if (title.includes('Cloth') || title.includes('Marvelous')) return ICONS.shirt;
+    if (title.includes('Anatomy')) return ICONS.user;
+    if (title.includes('Scan')) return ICONS.scanFace;
+    if (title.includes('IA')) return ICONS.cpu;
+    switch (category) {
+        case 'modeling':    return ICONS.box;
+        case 'texturing':   return ICONS.palette;
+        case 'workflow':    return ICONS.repeat;
+        case 'specialized': return ICONS.layers;
+        case 'career':      return ICONS.briefcase;
+        default:            return ICONS.box;
+    }
+}
+
+// ════ STATE ═══════════════════════════════════════════════════════════════════
+let modules = [];
+let currentId = null;
+let dirty = false;
+let moduleListStart = 0;
+const MODULES_PER_PAGE = 4;
+
+// ════ INIT ════════════════════════════════════════════════════════════════════
+async function init() {
+    try {
+        const res = await fetch('/api/modules');
+        modules = await res.json();
+        renderModuleList();
+        if (modules.length > 0) selectModule(modules[0].id);
+        setStatus('idle', 'Prêt');
+    } catch(e) {
+        setStatus('error', 'Erreur serveur');
+        console.error(e);
+    }
+}
+
+// ════ HELPERS ═════════════════════════════════════════════════════════════════
+function escHtml(s) {
+    return String(s||'')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escAttr(s) { return escHtml(s); }
+function getModule(id) { return modules.find(m => m.id === id); }
+function markDirty() { if (!dirty) { dirty = true; setStatus('dirty','Non sauvegardé'); } }
+function setStatus(type, text) {
+    const el = document.getElementById('saveStatus');
+    el.className = 'spill s-' + type;
+    el.textContent = text;
+}
+function pastePlain(e) {
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData||window.clipboardData).getData('text/plain'));
+}
+function stopEnter(e) { if (e.key==='Enter') { e.preventDefault(); e.target.blur(); } }
+
+// ════ SIDEBAR ═════════════════════════════════════════════════════════════════
+function renderModuleList() {
+    const container = document.getElementById('module-list');
+    const visible = modules.slice(moduleListStart, moduleListStart + MODULES_PER_PAGE);
+    container.innerHTML = visible.map(m => {
+        const isActive = m.id === currentId;
+        return `
+        <button onclick="selectModule(${m.id})" class="w-full text-left p-4 rounded-xl border transition-all duration-300 group flex items-center justify-between
+            ${isActive
+                ? 'bg-[#4a3426] border-[#cfa848] shadow-[0_4px_0_rgba(207,168,72,0.3)]'
+                : 'bg-white border-[#eaddcf] hover:border-[#cfa848] hover:bg-[#fdf7ec] shadow-sm'}">
+            <div class="flex items-center gap-4">
+                <div class="p-3 rounded-lg ${isActive ? 'bg-[#cfa848] text-[#4a3426]' : 'bg-[#eaddcf] text-[#4a3426] group-hover:bg-[#cfa848]/30 transition-colors'}">
+                    ${getModuleIcon(m.category, m.title)}
+                </div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider ${isActive ? 'text-[#cfa848]' : 'text-[#4a3426]/50'}">Semaine ${m.week}</span>
+                    <h3 class="font-semibold text-base leading-tight ${isActive ? 'text-[#f8f1e0]' : 'text-[#4a3426]'}">${escHtml(m.title)}</h3>
+                </div>
+            </div>
+            <span class="transition-transform ${isActive ? 'text-[#cfa848]' : 'text-[#4a3426]/30 opacity-0 group-hover:opacity-100'}">${ICONS.chevronRight}</span>
+        </button>`;
+    }).join('');
+    updatePaginationButtons();
+}
+
+function paginateModules(dir) {
+    const ns = moduleListStart + dir * MODULES_PER_PAGE;
+    if (ns < 0 || ns >= modules.length) return;
+    moduleListStart = ns;
+    renderModuleList();
+}
+
+function updatePaginationButtons() {
+    const up  = document.getElementById('scroll-up-btn');
+    const dn  = document.getElementById('scroll-down-btn');
+    const ctr = document.getElementById('module-counter');
+    if (up)  up.classList.toggle('hidden', moduleListStart === 0);
+    if (dn)  dn.classList.toggle('hidden', moduleListStart + MODULES_PER_PAGE >= modules.length);
+    if (ctr) ctr.textContent = `${Math.min(moduleListStart+MODULES_PER_PAGE, modules.length)}/${modules.length}`;
+}
+
+function selectModule(id) {
+    const idx = modules.findIndex(m => m.id === id);
+    if (idx < 0) return;
+    if (idx < moduleListStart) moduleListStart = idx;
+    else if (idx >= moduleListStart + MODULES_PER_PAGE) moduleListStart = idx - MODULES_PER_PAGE + 1;
+    currentId = id;
+    renderModuleList();
+    renderModuleDetail();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════ MODULE DETAIL — WYSIWYG ════════════════════════════════════════════════
+function renderModuleDetail() {
+    const m = getModule(currentId);
+    if (!m) return;
+    const container = document.getElementById('module-detail');
+
+    // Tools — same pill style + × delete
+    const toolsHtml = (m.tools||[]).map((t,i) => `
+        <span class="hover-group flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#eaddcf] border border-[#cfa848]/30 text-[#4a3426] text-sm font-medium">
+            <span class="text-[#cfa848]">${ICONS.penTool}</span>
+            ${escHtml(t)}
+            <button class="del-btn ml-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[#4a3426]/40 hover:text-[#e05a4e] hover:bg-[#e05a4e]/10 text-sm leading-none transition-colors" onclick="removeTool(${i})">×</button>
+        </span>
+    `).join('');
+
+    // Deliverables — same bullet + contenteditable + × on hover
+    const delHtml = (m.deliverables||[]).map((d,i) => `
+        <li class="hover-group flex items-start gap-3 text-sm text-[#5d4231]">
+            <div class="mt-2 w-1.5 h-1.5 rounded-full bg-[#cfa848] shrink-0"></div>
+            <span contenteditable="true" class="flex-1"
+                onblur="updateDeliverable(${i},this.innerText.trim())"
+                oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(d)}</span>
+            <button class="del-btn shrink-0 w-4 h-4 rounded-full bg-[#f8f1e0] border border-[#eaddcf] hover:border-[#e05a4e] text-[#4a3426]/30 hover:text-[#e05a4e] flex items-center justify-center text-xs transition-all mt-0.5" onclick="removeDeliverable(${i})">×</button>
+        </li>
+    `).join('');
+
+    // Schedule days — same card visual + contenteditable + day/task delete
+    const schedHtml = (m.schedule||[]).map((day,di) => {
+        const tasksHtml = (day.tasks||[]).map((t,ti) => `
+            <li class="hover-group flex items-start gap-2 text-[#5d4231] text-sm">
+                <span class="mt-1.5 w-1 h-1 bg-[#cfa848]/60 rounded-full shrink-0"></span>
+                <span contenteditable="true" class="flex-1"
+                    onblur="updateTask(${di},${ti},this.innerText.trim())"
+                    oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(t)}</span>
+                <button class="del-btn shrink-0 w-4 h-4 rounded-full bg-[#fdf7ec] border border-[#eaddcf] hover:border-[#e05a4e] text-[#4a3426]/30 hover:text-[#e05a4e] flex items-center justify-center text-xs transition-all" onclick="removeTask(${di},${ti})">×</button>
+            </li>
+        `).join('');
+        return `
+        <div class="hover-group bg-[#fdf7ec] border border-[#eaddcf] rounded-xl overflow-hidden hover:border-[#cfa848] transition-colors shadow-sm">
+            <div class="p-4 flex flex-col md:flex-row md:items-start gap-4">
+                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-lg flex flex-col items-center justify-center border border-[#eaddcf] hover:border-[#cfa848] transition-colors shadow-sm">
+                    <span class="text-xs text-[#4a3426]/40 uppercase font-bold">Jour</span>
+                    <span class="text-2xl font-bold text-[#4a3426]">${day.day}</span>
+                </div>
+                <div class="flex-grow min-w-0">
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 contenteditable="true" class="font-bold text-[#4a3426] border-l-2 border-[#cfa848] pl-2 flex-1"
+                            onblur="updateDayTitle(${di},this.innerText.trim())"
+                            oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(day.title)}</h3>
+                        <button class="del-btn shrink-0 w-5 h-5 rounded-full bg-[#f8f1e0] border border-[#eaddcf] hover:border-[#e05a4e] text-[#4a3426]/30 hover:text-[#e05a4e] flex items-center justify-center text-xs transition-all" onclick="removeDay(${di})">×</button>
+                    </div>
+                    <ul class="grid grid-cols-1 gap-2">${tasksHtml}</ul>
+                    <button onclick="addTask(${di})" class="mt-2 flex items-center gap-1.5 text-xs text-[#4a3426]/30 hover:text-[#cfa848] transition-colors font-medium">
+                        <span class="w-3.5 h-3.5 rounded-full border border-dashed border-current flex items-center justify-center leading-none">+</span>
+                        Tâche
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    // Rendus grid — same photo cards + name editor + delete overlay
+    const rc = (m.rendus||[]).length;
+    const rendusCards = rc === 0
+        ? `<div class="col-span-3 flex items-center justify-center h-28 border-2 border-dashed border-[#cfa848]/30 rounded-xl text-[#4a3426]/30 text-sm">Aucun rendu — importez des images ci-dessus</div>`
+        : (m.rendus||[]).map((r,i) => `
+            <div class="hover-group relative overflow-hidden rounded-xl border-2 bg-white shadow-lg ${i<3?'border-[#4a3426]':'border-[#eaddcf]'}">
+                ${i<3 ? '<div class="absolute top-2 left-2 z-10 px-2 py-0.5 bg-[#cfa848] rounded-full text-[#4a3426] text-xs font-black uppercase tracking-wider shadow-sm">Affiché</div>' : ''}
+                <div class="aspect-square overflow-hidden bg-[#eaddcf]">
+                    <img src="${escAttr(r.image)}" alt="${escAttr(r.student)}" class="w-full h-full object-cover">
+                </div>
+                <div class="p-3">
+                    <span contenteditable="true" class="block text-sm font-semibold text-[#4a3426]"
+                        onblur="updateRenduStudent(${i},this.innerText.trim())"
+                        oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(r.student)}</span>
+                    <p class="text-xs text-[#4a3426]/30 mt-0.5 truncate">${escHtml(r.image)}</p>
+                </div>
+                <button onclick="removeRendu(${i})" class="del-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-[#e05a4e] text-white flex items-center justify-center font-bold shadow-md" title="Supprimer">×</button>
+            </div>
+        `).join('');
+
+    // ── Full template — mirrors index.html's renderModuleDetail output ─────────
+    container.innerHTML = `
+    <div class="animate-fade-slide p-1">
+
+        <!-- Delete module (subtle, top right) -->
+        <div class="flex justify-end mb-1">
+            <button onclick="deleteCurrentModule()" class="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[#eaddcf] text-[#4a3426]/25 hover:border-[#e05a4e]/50 hover:text-[#e05a4e] text-xs font-medium transition-all">
+                ${ICONS.trash} Supprimer ce module
+            </button>
+        </div>
+
+        <!-- Banner (same gradient — title, description, tools are editable) -->
+        <div class="banner-gradient mb-8">
+            <div class="flex items-center gap-2 mb-3 flex-wrap">
+                <span class="px-3 py-1 bg-[#cfa848]/15 text-[#4a3426] rounded-full text-xs font-bold uppercase tracking-widest border border-[#cfa848]/30">Module ${m.id}</span>
+                <span class="text-[#4a3426]/40 text-sm font-medium">| Semaine</span>
+                <input type="number" value="${m.week}" min="1" max="52" class="meta-input w-10 text-center"
+                    oninput="updateField('week',parseInt(this.value)||${m.week}); renderModuleList();">
+                <select class="meta-input ml-2 cursor-pointer" onchange="updateField('category',this.value); renderModuleList();">
+                    ${['modeling','texturing','workflow','specialized','career','sculpting','rigging','animation','cloth','lookdev'].map(c =>
+                        `<option value="${c}"${m.category===c?' selected':''}>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`
+                    ).join('')}
+                </select>
+            </div>
+
+            <h1 contenteditable="true"
+                class="text-4xl md:text-5xl font-black text-[#4a3426] mb-4"
+                style="line-height:1.2; outline:none;"
+                onblur="updateField('title',this.innerText.trim()); renderModuleList();"
+                oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(m.title)}</h1>
+
+            <p contenteditable="true"
+                class="text-lg text-[#5d4231] max-w-2xl leading-relaxed"
+                style="outline:none;"
+                onblur="updateField('description',this.innerText.trim())"
+                oninput="markDirty()" onpaste="pastePlain(event)">${escHtml(m.description)}</p>
+
+            <!-- Tools: same pills + inline add -->
+            <div class="flex flex-wrap gap-2 mt-5 items-center">
+                ${toolsHtml}
+                <button id="addToolBtn" onclick="showToolInput()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-dashed border-[#cfa848]/50 text-[#4a3426]/40 text-sm font-medium hover:bg-[#eaddcf] hover:text-[#4a3426] hover:border-[#cfa848] transition-all">+ Outil</button>
+                <input type="text" id="toolInput" class="tool-input" placeholder="Ex: ZBrush"
+                    onblur="commitTool(this)" onkeydown="handleToolKey(event,this)">
+            </div>
+        </div>
+
+        <!-- 2-col grid: left = Objectif + Livrables, right = Planning (identical to index.html) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-1 space-y-8">
+                <div class="bg-[#f8f1e0] p-6 rounded-2xl border border-[#eaddcf] shadow-sm">
+                    <div class="flex items-center gap-3 mb-4 text-[#cfa848]">${ICONS.trophy}<h2 class="font-black text-xl text-[#4a3426]">Objectif</h2></div>
+                    <p contenteditable="true"
+                        class="text-[#5d4231] text-sm leading-relaxed"
+                        style="outline:none; min-height:2em;"
+                        onblur="updateField('objective',this.innerText.trim())"
+                        oninput="markDirty()" onpaste="pastePlain(event)">${escHtml(m.objective)}</p>
+                </div>
+
+                <div class="bg-[#f8f1e0] p-6 rounded-2xl border border-[#eaddcf] shadow-sm">
+                    <div class="flex items-center gap-3 mb-4 text-[#cfa848]">${ICONS.checkCircle}<h2 class="font-black text-xl text-[#4a3426]">Livrables</h2></div>
+                    <ul class="space-y-3">${delHtml}</ul>
+                    <button onclick="addDeliverable()" class="mt-4 flex items-center gap-2 text-sm text-[#4a3426]/40 hover:text-[#cfa848] transition-colors font-medium">
+                        <span class="w-4 h-4 rounded-full border border-dashed border-current flex items-center justify-center text-xs font-bold leading-none">+</span>
+                        Ajouter un livrable
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="flex items-center gap-3 mb-6"><span class="text-[#cfa848]">${ICONS.calendar}</span><h2 class="text-2xl font-black text-[#4a3426]">Planning de la semaine</h2></div>
+                <div class="space-y-4">${schedHtml}</div>
+                <button onclick="addDay()" class="mt-4 w-full py-3 border-2 border-dashed border-[#cfa848]/30 rounded-xl text-[#4a3426]/40 hover:border-[#cfa848] hover:text-[#cfa848] transition-all text-sm font-medium">+ Ajouter un jour</button>
+            </div>
+        </div>
+
+        <!-- Rendus Étudiants (same banner + grid, with upload + delete controls) -->
+        <div class="mt-10">
+            <div class="banner-gradient">
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-black text-[#4a3426] mb-3" style="line-height:1.2;">Rendu Étudiants</h2>
+                        <p class="text-lg text-[#5d4231] font-light">${rc} rendu(s) — les 3 premiers s'affichent directement.</p>
+                    </div>
+                    <label for="uploadInput" class="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-[#4a3426] hover:bg-[#3a2418] text-[#f8f1e0] text-sm font-bold border-2 border-[#cfa848]/40 hover:border-[#cfa848] transition-all self-start mt-1">
+                        ${ICONS.upload} Importer images
+                    </label>
+                    <input type="file" id="uploadInput" multiple accept="image/*" style="display:none" onchange="handleUpload(this)">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${rendusCards}</div>
+        </div>
+    </div>`;
+}
+
+// ════ FIELD UPDATERS (called from onblur — no re-render needed) ══════════════
+function updateField(field, value)          { const m=getModule(currentId); if(m){m[field]=value; markDirty();} }
+function updateDeliverable(i, val)          { const m=getModule(currentId); if(m?.deliverables){m.deliverables[i]=val; markDirty();} }
+function updateDayTitle(di, val)            { const m=getModule(currentId); if(m?.schedule?.[di]){m.schedule[di].title=val; markDirty();} }
+function updateTask(di, ti, val)            { const m=getModule(currentId); if(m?.schedule?.[di]?.tasks){m.schedule[di].tasks[ti]=val; markDirty();} }
+function updateRenduStudent(i, val)         { const m=getModule(currentId); if(m?.rendus?.[i]){m.rendus[i].student=val; markDirty();} }
+
+// ════ DELIVERABLES ════════════════════════════════════════════════════════════
+function addDeliverable()  { const m=getModule(currentId); if(!m) return; (m.deliverables=m.deliverables||[]).push('Nouveau livrable'); renderModuleDetail(); markDirty(); }
+function removeDeliverable(i) { const m=getModule(currentId); if(!m) return; m.deliverables.splice(i,1); renderModuleDetail(); markDirty(); }
+
+// ════ TOOLS ═══════════════════════════════════════════════════════════════════
+function removeTool(i)  { const m=getModule(currentId); if(!m) return; m.tools.splice(i,1); renderModuleDetail(); markDirty(); }
+function showToolInput(){ const inp=document.getElementById('toolInput'); if(!inp) return; inp.style.display='inline-block'; inp.value=''; inp.focus(); document.getElementById('addToolBtn').style.display='none'; }
+function commitTool(inp){ const val=inp.value.trim(); inp.style.display='none'; const b=document.getElementById('addToolBtn'); if(b) b.style.display=''; if(!val||!currentId) return; const m=getModule(currentId); (m.tools=m.tools||[]).push(val); renderModuleDetail(); markDirty(); }
+function handleToolKey(e,inp){ if(e.key==='Enter'){e.preventDefault();commitTool(inp);} if(e.key==='Escape'){inp.style.display='none'; const b=document.getElementById('addToolBtn'); if(b) b.style.display='';} }
+
+// ════ SCHEDULE ════════════════════════════════════════════════════════════════
+function addDay()          { const m=getModule(currentId); if(!m) return; m.schedule=m.schedule||[]; const n=m.schedule.length>0?Math.max(...m.schedule.map(d=>d.day))+1:1; m.schedule.push({day:n,title:'Nouveau jour',tasks:[]}); renderModuleDetail(); markDirty(); }
+function removeDay(di)     { const m=getModule(currentId); if(!m) return; m.schedule.splice(di,1); renderModuleDetail(); markDirty(); }
+function addTask(di)       { const m=getModule(currentId); if(!m) return; (m.schedule[di].tasks=m.schedule[di].tasks||[]).push('Nouvelle tâche'); renderModuleDetail(); markDirty(); }
+function removeTask(di,ti) { const m=getModule(currentId); if(!m) return; m.schedule[di].tasks.splice(ti,1); renderModuleDetail(); markDirty(); }
+
+// ════ RENDUS ══════════════════════════════════════════════════════════════════
+function removeRendu(i) { const m=getModule(currentId); if(!m) return; m.rendus.splice(i,1); renderModuleDetail(); markDirty(); }
+async function handleUpload(input) {
+    const m = getModule(currentId); if(!m) return;
+    m.rendus = m.rendus||[];
+    const files = Array.from(input.files); if(!files.length) return;
+    setStatus('saving', `Envoi de ${files.length} image(s)…`);
+    for (const file of files) {
+        const fd = new FormData();
+        fd.append('moduleId', String(currentId));
+        fd.append('file', file, file.name);
+        try {
+            const res = await fetch('/api/upload',{method:'POST',body:fd});
+            const data = await res.json();
+            if (data.ok) m.rendus.push({student:file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' '), image:data.path});
+        } catch(e) { console.error(e); }
+    }
+    renderModuleDetail(); markDirty(); input.value='';
+}
+
+// ════ ADD / DELETE MODULE ═════════════════════════════════════════════════════
+function addModule() {
+    const newId  = modules.length > 0 ? Math.max(...modules.map(m=>m.id))  +1 : 1;
+    const newWeek= modules.length > 0 ? Math.max(...modules.map(m=>m.week))+1 : 1;
+    modules.push({id:newId,week:newWeek,title:'Nouveau module',category:'modeling',description:'',objective:'',tools:[],deliverables:[],schedule:[],rendus:[]});
+    moduleListStart = Math.max(0, modules.length - MODULES_PER_PAGE);
+    renderModuleList(); selectModule(newId); markDirty();
+}
+function deleteCurrentModule() {
+    if (!confirm('Supprimer ce module ? La suppression sera appliquée à la prochaine sauvegarde.')) return;
+    const idx = modules.findIndex(m=>m.id===currentId);
+    modules.splice(idx,1); currentId=null; dirty=true;
+    moduleListStart = Math.max(0, Math.min(moduleListStart, modules.length-MODULES_PER_PAGE));
+    if (moduleListStart<0) moduleListStart=0;
+    renderModuleList();
+    if (modules.length>0) selectModule(modules[Math.max(0,idx-1)].id);
+    else document.getElementById('module-detail').innerHTML='<div class="flex items-center justify-center h-64 text-[#4a3426]/30 text-sm">Aucun module.</div>';
+}
+
+// ════ SAVE ════════════════════════════════════════════════════════════════════
+async function saveAll() {
+    setStatus('saving','Sauvegarde…');
+    try {
+        const res  = await fetch('/api/modules',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(modules)});
+        const data = await res.json();
+        if (data.ok) { dirty=false; setStatus('saved','Sauvegardé ✓'); }
+        else          { setStatus('error', data.error||'Erreur'); }
+    } catch(e) { setStatus('error','Erreur réseau'); console.error(e); }
+}
+
+// ════ GUARD UNSAVED CHANGES ═══════════════════════════════════════════════════
+window.addEventListener('beforeunload', e => { if(dirty){e.preventDefault();e.returnValue='';} });
+
+// ════ BOOT ════════════════════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
