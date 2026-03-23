@@ -76,6 +76,9 @@ def extract_modules(html: str):
         modules = json.loads(array_str)
         for m in modules:
             m.setdefault('rendus', [])
+            m.setdefault('extraBlocks', [])
+            m.setdefault('colors', {})
+            m.setdefault('heights', {})
         return modules
     except json.JSONDecodeError:
         pass
@@ -93,6 +96,9 @@ def _js_to_json(js: str) -> list:
         result = json.loads(transformed)
         for m in result:
             m.setdefault('rendus', [])
+            m.setdefault('extraBlocks', [])
+            m.setdefault('colors', {})
+            m.setdefault('heights', {})
         return result
     except json.JSONDecodeError as e:
         print("[WARN] JS-to-JSON parse failed: " + str(e))

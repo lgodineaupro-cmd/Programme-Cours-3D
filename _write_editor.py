@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+"""Write the new editor.html — run once then delete."""
+content = r'''<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
@@ -627,3 +628,6 @@ init();
 </script>
 </body>
 </html>
+'''
+open('editor.html','w',encoding='utf-8').write(content)
+print('ok', len(content))
