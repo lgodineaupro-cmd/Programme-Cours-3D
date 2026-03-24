@@ -19,6 +19,24 @@
     .del-btn{opacity:0;transition:opacity .15s}.hover-group:hover .del-btn{opacity:1}
     .tool-input{display:none;padding:4px 10px;border-radius:6px;border:1.5px dashed #cfa848;background:rgba(207,168,72,.06);font-size:.875rem;color:#4a3426;outline:none;width:160px;font-family:'Inter',sans-serif}
     .tool-input:focus{border-style:solid;background:rgba(207,168,72,.1)}
+    .tool-badge{cursor:grab;transition:opacity .15s,outline .15s}
+    .tool-badge.dragging{opacity:.3;cursor:grabbing}
+    .tool-badge.drag-over{outline:2px solid #cfa848;outline-offset:3px;background:rgba(207,168,72,.2)!important}
+    .tool-dropdown{position:absolute;left:0;top:100%;z-index:100;background:#fff;border:1px solid #eaddcf;border-radius:10px;box-shadow:0 8px 24px rgba(74,52,38,.15);max-height:180px;overflow-y:auto;width:230px;display:none;margin-top:4px}
+    .tool-dropdown.visible{display:block}
+    .tool-dropdown-item{padding:7px 12px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;color:#4a3426;transition:background .1s}
+    .tool-dropdown-item:hover,.tool-dropdown-item.active{background:#fdf7ec}
+    .tool-dropdown-item strong{color:#cfa848;font-weight:800}
+    .tool-dup-flash{animation:dupFlash .6s ease}
+    @keyframes dupFlash{0%,100%{outline-color:rgba(207,168,72,.3)}50%{outline-color:#e05a4e;outline-style:solid;outline-width:2px}}
+    .rendu-img-wrap{position:relative;overflow:hidden;cursor:default}
+    .rendu-img-wrap img{transform-origin:center center;transition:none}
+    .rendu-img-wrap.panning{cursor:grabbing}
+    .rendu-zoom-badge{position:absolute;bottom:6px;right:6px;background:rgba(74,52,38,.7);color:#f8f1e0;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:6}
+    .rendu-zoom-badge.visible{opacity:1}
+    .rendu-reset-btn{position:absolute;bottom:6px;left:6px;background:rgba(74,52,38,.65);color:#f8f1e0;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;cursor:pointer;opacity:0;transition:opacity .15s;z-index:6;border:none}
+    .rendu-img-wrap:hover .rendu-reset-btn{opacity:1}
+    .rendu-reset-btn:hover{background:#e05a4e}
     .meta-input{background:transparent;border:none;border-bottom:1.5px solid rgba(207,168,72,.4);outline:none;color:rgba(74,52,38,.55);font-family:'Inter',sans-serif;font-size:.875rem;transition:border-color .15s}
     .meta-input:focus{border-bottom-color:#cfa848;color:#4a3426}
     .spill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid;transition:all .2s}
@@ -131,15 +149,9 @@
         <aside class="md:col-span-4 lg:col-span-3 space-y-4">
             <div class="flex items-center justify-between mb-4 px-1">
                 <h2 class="text-[#4a3426]/60 text-sm font-bold uppercase tracking-wider">Timeline</h2>
-                <span id="module-counter" class="text-xs bg-[#eaddcf] text-[#4a3426] font-medium px-2 py-0.5 rounded-full border border-[#cfa848]/20">–/–</span>
+                <span id="module-counter" class="text-xs bg-[#eaddcf] text-[#4a3426] font-medium px-2 py-0.5 rounded-full border border-[#cfa848]/20">0</span>
             </div>
-            <button id="scroll-up-btn" onclick="paginateModules(-1)" class="w-full hidden flex justify-center items-center py-2 rounded-xl border border-[#eaddcf] bg-white hover:bg-[#fdf7ec] hover:border-[#cfa848] text-[#4a3426]/40 hover:text-[#cfa848] transition-all shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-            </button>
-            <div id="module-list" class="space-y-3"></div>
-            <button id="scroll-down-btn" onclick="paginateModules(1)" class="w-full flex justify-center items-center py-2 rounded-xl border border-[#eaddcf] bg-white hover:bg-[#fdf7ec] hover:border-[#cfa848] text-[#4a3426]/40 hover:text-[#cfa848] transition-all shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
+            <div id="module-list" class="space-y-3 overflow-y-auto" style="max-height:calc(100vh - 280px)"></div>
             <button onclick="addModule()" class="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-[#cfa848]/30 text-[#4a3426]/40 hover:border-[#cfa848] hover:text-[#cfa848] transition-all text-sm font-medium mt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Nouveau module
@@ -197,8 +209,7 @@ function getModuleIcon(cat,title){
 }
 
 // ════ STATE ══════════════════════════════════════════════════════════════════
-let modules=[], currentId=null, dirty=false, moduleListStart=0;
-const MODULES_PER_PAGE=4;
+let modules=[], currentId=null, dirty=false;
 let undoStack=[]; const UNDO_LIMIT=100;
 
 // ════ COLOR PICKER ═══════════════════════════════════════════════════════════
@@ -404,14 +415,13 @@ function cpBtn(key, label, property){
 // ════ SIDEBAR ════════════════════════════════════════════════════════════════
 function renderModuleList(){
     const c=document.getElementById('module-list');
-    c.innerHTML=modules.slice(moduleListStart,moduleListStart+MODULES_PER_PAGE).map((m,pi)=>{
+    c.innerHTML=modules.map((m,gi)=>{
         const a=m.id===currentId;
-        const gi=moduleListStart+pi; // global index in full modules array
         const canUp=gi>0, canDn=gi<modules.length-1;
         return`<div class="relative hover-group">
             <button onclick="selectModule(${m.id})" class="w-full text-left p-4 pr-10 rounded-xl border transition-all duration-300 group flex items-center justify-between ${a?'bg-[#4a3426] border-[#cfa848] shadow-[0_4px_0_rgba(207,168,72,0.3)]':'bg-white border-[#eaddcf] hover:border-[#cfa848] hover:bg-[#fdf7ec] shadow-sm'}">
                 <div class="flex items-center gap-4"><div class="p-3 rounded-lg ${a?'bg-[#cfa848] text-[#4a3426]':'bg-[#eaddcf] text-[#4a3426] group-hover:bg-[#cfa848]/30 transition-colors'}">${getModuleIcon(m.category,m.title)}</div>
-                <div><span class="text-xs font-bold uppercase tracking-wider ${a?'text-[#cfa848]':'text-[#4a3426]/50'}">Semaine ${m.week}</span>
+                <div><span class="text-xs font-bold uppercase tracking-wider ${a?'text-[#cfa848]':'text-[#4a3426]/50'}">${escHtml(m.weekLabel||'Semaine')} ${m.week}</span>
                 <h3 class="font-semibold text-base leading-tight ${a?'text-[#f8f1e0]':'text-[#4a3426]'}">${escHtml(m.title)}</h3></div></div>
                 <span class="${a?'text-[#cfa848]':'text-[#4a3426]/30 opacity-0 group-hover:opacity-100'}">${ICONS.chevronRight}</span>
             </button>
@@ -421,20 +431,17 @@ function renderModuleList(){
             </div>
         </div>`;
     }).join('');
-    updatePaginationButtons();
-}
-function paginateModules(dir){const ns=moduleListStart+dir*MODULES_PER_PAGE;if(ns<0||ns>=modules.length)return;moduleListStart=ns;renderModuleList();}
-function updatePaginationButtons(){
-    const up=document.getElementById('scroll-up-btn'),dn=document.getElementById('scroll-down-btn'),ct=document.getElementById('module-counter');
-    if(up)up.classList.toggle('hidden',moduleListStart===0);
-    if(dn)dn.classList.toggle('hidden',moduleListStart+MODULES_PER_PAGE>=modules.length);
-    if(ct)ct.textContent=`${Math.min(moduleListStart+MODULES_PER_PAGE,modules.length)}/${modules.length}`;
+    const ct=document.getElementById('module-counter');
+    if(ct)ct.textContent=modules.length;
 }
 function selectModule(id){
     const idx=modules.findIndex(m=>m.id===id);if(idx<0)return;
-    if(idx<moduleListStart)moduleListStart=idx;
-    else if(idx>=moduleListStart+MODULES_PER_PAGE)moduleListStart=idx-MODULES_PER_PAGE+1;
     currentId=id;hideColorPicker();renderModuleList();renderModuleDetail();
+    // Scroll the selected module into view in the sidebar
+    requestAnimationFrame(()=>{
+        const el=document.querySelector(`#module-list > div:nth-child(${idx+1})`);
+        if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+    });
     window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -475,15 +482,15 @@ function renderModuleDetail(){
     const container=document.getElementById('module-detail');
 
     const toolsHtml=(m.tools||[]).map((t,i)=>`
-        <span id="tool-badge-${i}" class="hover-group flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#eaddcf] border border-[#cfa848]/30 text-[#4a3426] text-sm font-medium transition-all">
-            <span class="text-[#cfa848] shrink-0">${ICONS.penTool}</span>
-            <span contenteditable="true" spellcheck="false" style="outline:none;min-width:20px;cursor:text;"
+        <span id="tool-badge-${i}" class="tool-badge hover-group flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#eaddcf] border border-[#cfa848]/30 text-[#4a3426] text-sm font-medium"
+            draggable="true" ondragstart="onToolDragStart(event,${i})" ondragover="onToolDragOver(event,${i})" ondragleave="onToolDragLeave(event,${i})" ondrop="onToolDrop(event,${i})" ondragend="onToolDragEnd()">
+            <span class="text-[#cfa848] shrink-0" style="cursor:grab">${ICONS.penTool}</span>
+            <span contenteditable="true" spellcheck="false" draggable="false" style="outline:none;min-width:20px;cursor:text;"
                 onblur="updateTool(${i},this.innerText.trim())"
                 onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
                 onpaste="pastePlain(event)"
                 onclick="event.stopPropagation()">${escHtml(t)}</span>
-            <button class="del-btn w-4 h-4 flex items-center justify-center rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs font-bold transition-colors" title="Déplacer (cliquer puis cliquer un autre outil)" onclick="selectTool(event,${i})">&#8644;</button>
-            <button class="del-btn ml-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[#4a3426]/40 hover:text-[#e05a4e] hover:bg-[#e05a4e]/10 text-sm leading-none transition-colors" onclick="removeTool(${i})">×</button>
+            <button class="del-btn ml-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[#4a3426]/40 hover:text-[#e05a4e] hover:bg-[#e05a4e]/10 text-sm leading-none transition-colors" onclick="event.stopPropagation();removeTool(${i})">×</button>
         </span>`).join('');
 
     const delHtml=(m.deliverables||[]).map((d,i)=>`
@@ -579,7 +586,13 @@ function renderModuleDetail(){
                 class="hover-group relative overflow-hidden rounded-xl border-2 bg-white shadow-lg cursor-pointer transition-all duration-150 ${i<3?'border-[#4a3426]':'border-[#eaddcf]'}"
                 title="Cliquer pour sélectionner, puis cliquer une autre image pour les échanger">
                 ${i<3?'<div class="absolute top-2 left-2 z-10 px-2 py-0.5 bg-[#cfa848] rounded-full text-[#4a3426] text-xs font-black uppercase tracking-wider shadow-sm">Affiché</div>':''}
-                <div class="aspect-square overflow-hidden bg-[#eaddcf]"><img src="${escAttr(r.image)}" alt="${escAttr(r.student)}" class="w-full h-full object-cover pointer-events-none" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;background:#fee2e2;color:#b91c1c;font-size:11px;font-weight:700;padding:8px;text-align:center;gap:4px;"><span style="font-size:22px;">⚠️</span><span>Image introuvable</span><span style="font-weight:400;opacity:.7;word-break:break-all;">${escHtml(r.image)}</span></div></div>
+                <div class="aspect-square rendu-img-wrap bg-[#eaddcf]" data-rendu-idx="${i}"
+                    onmousedown="renduImgMouseDown(event,${i})" onwheel="renduImgWheel(event,${i})" oncontextmenu="event.preventDefault()">
+                    <img src="${escAttr(r.image)}" alt="${escAttr(r.student)}" class="w-full h-full object-cover" style="${renduImgStyle(r)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                    <div style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;background:#fee2e2;color:#b91c1c;font-size:11px;font-weight:700;padding:8px;text-align:center;gap:4px;"><span style="font-size:22px;">⚠️</span><span>Image introuvable</span><span style="font-weight:400;opacity:.7;word-break:break-all;">${escHtml(r.image)}</span></div>
+                    <span class="rendu-zoom-badge" id="rendu-zoom-${i}">${Math.round((r.zoom||1)*100)}%</span>
+                    ${(r.panX||r.panY||(r.zoom&&r.zoom!==1))?`<button class="rendu-reset-btn" onclick="event.stopPropagation();resetRenduTransform(${i})">↺ Reset</button>`:''}
+                </div>
                 <div class="p-3" onclick="event.stopPropagation()">
                     <span contenteditable="true" class="block text-sm font-semibold text-[#4a3426]"
                         onblur="updateRenduStudent(${i},this.innerText.trim())"
@@ -606,12 +619,21 @@ function renderModuleDetail(){
 
         <div class="banner-gradient mb-8">
             <div class="flex items-center gap-2 mb-3 flex-wrap">
-                <span class="px-3 py-1 bg-[#cfa848]/15 text-[#4a3426] rounded-full text-xs font-bold uppercase tracking-widest border border-[#cfa848]/30">Module ${m.id}</span>
-                <span class="text-[#4a3426]/40 text-sm font-medium">| Semaine</span>
+                <span class="inline-flex items-center gap-1 px-3 py-1 bg-[#cfa848]/15 text-[#4a3426] rounded-full text-xs font-bold uppercase tracking-widest border border-[#cfa848]/30">
+                    <span contenteditable="true" spellcheck="false" style="outline:none;min-width:30px;cursor:text;"
+                        onblur="updateField('moduleLabel',this.innerText.trim());renderModuleList();"
+                        onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(m.moduleLabel||'Module')}</span>
+                    ${m.id}
+                </span>
+                <span class="text-[#4a3426]/40 text-sm font-medium">|</span>
+                <span contenteditable="true" spellcheck="false" class="text-[#4a3426]/40 text-sm font-medium" style="outline:none;min-width:30px;cursor:text;"
+                    onblur="updateField('weekLabel',this.innerText.trim());renderModuleList();"
+                    onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(m.weekLabel||'Semaine')}</span>
                 <input type="number" value="${m.week}" min="1" max="52" class="meta-input w-10 text-center" oninput="updateField('week',parseInt(this.value)||${m.week});renderModuleList();">
-                <select class="meta-input ml-2 cursor-pointer" onchange="updateField('category',this.value);renderModuleList();">
-                    ${['modeling','texturing','workflow','specialized','career','sculpting','rigging','animation','cloth','lookdev'].map(c=>`<option value="${c}"${m.category===c?' selected':''}>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('')}
+                <select id="categorySelect" class="meta-input ml-2 cursor-pointer" onchange="onCategoryChange(this.value)">
+                    ${_buildCategoryOptions(m.category)}
                 </select>
+                <input type="text" id="customCategoryInput" class="meta-input ml-1" style="width:100px;display:${_isBuiltinCategory(m.category)?'none':'inline-block'}" placeholder="Nom..." value="${_isBuiltinCategory(m.category)?'':escAttr(m.category)}" onblur="commitCustomCategory(this.value.trim())" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
             </div>
             <div class="hover-group relative inline-block w-full">
                 <h1 contenteditable="true" data-cp-key="title"
@@ -629,9 +651,14 @@ function renderModuleDetail(){
             </div>
             <div class="flex flex-wrap gap-2 mt-5 items-center">
                 ${toolsHtml}
-                <button id="addToolBtn" onclick="showToolInput()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-dashed border-[#cfa848]/50 text-[#4a3426]/40 text-sm font-medium hover:bg-[#eaddcf] hover:text-[#4a3426] hover:border-[#cfa848] transition-all">+ Outil</button>
-                <input type="text" id="toolInput" list="toolSuggestions" class="tool-input" placeholder="Ex: ZBrush" onblur="commitTool(this)" onkeydown="handleToolKey(event,this)">
-                <datalist id="toolSuggestions"></datalist>
+                <span id="toolInputWrap" style="position:relative;display:inline-flex;align-items:center">
+                    <button id="addToolBtn" onclick="showToolInput()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-dashed border-[#cfa848]/50 text-[#4a3426]/40 text-sm font-medium hover:bg-[#eaddcf] hover:text-[#4a3426] hover:border-[#cfa848] transition-all">+ Outil</button>
+                    <input type="text" id="toolInput" class="tool-input" placeholder="Ex: ZBrush" autocomplete="off"
+                        oninput="filterToolSuggestions(this.value)"
+                        onblur="scheduleCommitTool()"
+                        onkeydown="handleToolKey(event,this)">
+                    <div id="toolDropdown" class="tool-dropdown"></div>
+                </span>
             </div>
         </div>
 
@@ -711,6 +738,43 @@ function showColorPickerBg(e, el, key){
     _showPicker(e.currentTarget||e.target, 'Fond', key);
 }
 
+// ════ CATEGORY HELPERS ════════════════════════════════════════════════════════
+const BUILTIN_CATEGORIES=['modeling','texturing','workflow','specialized','career','sculpting','rigging','animation','cloth','lookdev'];
+
+function _isBuiltinCategory(cat){return BUILTIN_CATEGORIES.includes((cat||'').toLowerCase());}
+
+function _buildCategoryOptions(current){
+    const cur=(current||'modeling').toLowerCase();
+    const isCustom=!_isBuiltinCategory(cur);
+    // Collect custom categories used across all modules
+    const customs=[...new Set(modules.map(m=>m.category).filter(c=>c&&!_isBuiltinCategory(c)))];
+    let html=BUILTIN_CATEGORIES.map(c=>`<option value="${c}"${cur===c?' selected':''}>${c.charAt(0).toUpperCase()+c.slice(1)}</option>`).join('');
+    // Add existing custom categories from other modules
+    customs.forEach(c=>{
+        if(!BUILTIN_CATEGORIES.includes(c.toLowerCase())){
+            html+=`<option value="${escAttr(c)}"${cur===c.toLowerCase()?' selected':''}>${escHtml(c)}</option>`;
+        }
+    });
+    html+=`<option value="__custom__"${isCustom&&!customs.some(c=>c.toLowerCase()===cur)?' selected':''}>✏ Custom…</option>`;
+    return html;
+}
+
+function onCategoryChange(val){
+    const inp=document.getElementById('customCategoryInput');
+    if(val==='__custom__'){
+        if(inp){inp.style.display='inline-block';inp.value='';inp.focus();}
+    }else{
+        if(inp)inp.style.display='none';
+        updateField('category',val);renderModuleList();
+    }
+}
+
+function commitCustomCategory(val){
+    if(!val)return;
+    updateField('category',val);
+    renderModuleList();renderModuleDetail();
+}
+
 // ════ FIELD UPDATERS ══════════════════════════════════════════════════════════
 function updateField(f,v){const m=getModule(currentId);if(m&&m[f]!==v){pushUndo();m[f]=v;markDirty();}}
 function updateDeliverable(i,v){const m=getModule(currentId);if(m?.deliverables&&m.deliverables[i]!==v){pushUndo();m.deliverables[i]=v;markDirty();}}
@@ -731,81 +795,168 @@ function updateTool(i, val){
     const m=getModule(currentId);if(!m)return;
     if(!val){removeTool(i);return;}
     if((m.tools||[])[i]===val)return;
+    // Empêcher les doublons (ignorer la casse)
+    if(m.tools.some((t,j)=>j!==i&&t.toLowerCase()===val.toLowerCase())){
+        // Flash visuel pour indiquer le doublon
+        const badge=document.getElementById('tool-badge-'+i);
+        if(badge){badge.classList.add('tool-dup-flash');setTimeout(()=>badge.classList.remove('tool-dup-flash'),700);}
+        renderModuleDetail(); // reset au texte d'origine
+        return;
+    }
+    pushUndo();
     m.tools[i]=val;
     markDirty();
 }
 
-// — Swap tools par clic —
-let _toolSelected=null;
+// — Drag & drop reorder tools —
+let _dragToolIdx=null;
 
-function selectTool(e,i){
-    e.stopPropagation();
-    if(_toolSelected===null){
-        _toolSelected=i;
+function onToolDragStart(e,i){
+    // Ne pas démarrer le drag si on est dans un contenteditable
+    if(e.target.isContentEditable){e.preventDefault();return;}
+    _dragToolIdx=i;
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',i);
+    setTimeout(()=>{
         const b=document.getElementById('tool-badge-'+i);
-        if(b){b.style.outline='2px solid #cfa848';b.style.outlineOffset='2px';b.title='Cliquer un autre outil pour échanger';}
-    }else if(_toolSelected===i){
-        _clearToolSelection();
-    }else{
-        const m=getModule(currentId);if(!m?.tools)return;
-        pushUndo();
-        [m.tools[_toolSelected],m.tools[i]]=[m.tools[i],m.tools[_toolSelected]];
-        _toolSelected=null;
-        renderModuleDetail();markDirty();
+        if(b)b.classList.add('dragging');
+    },0);
+}
+function onToolDragOver(e,i){
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    if(_dragToolIdx!==null&&_dragToolIdx!==i){
+        const b=document.getElementById('tool-badge-'+i);
+        if(b)b.classList.add('drag-over');
     }
 }
-
-function _clearToolSelection(){
-    if(_toolSelected!==null){
-        const b=document.getElementById('tool-badge-'+_toolSelected);
-        if(b){b.style.outline='';b.style.outlineOffset='';}
-    }
-    _toolSelected=null;
+function onToolDragLeave(e,i){
+    const b=document.getElementById('tool-badge-'+i);
+    if(b)b.classList.remove('drag-over');
+}
+function onToolDrop(e,i){
+    e.preventDefault();
+    if(_dragToolIdx===null||_dragToolIdx===i){_dragToolIdx=null;return;}
+    const m=getModule(currentId);if(!m?.tools)return;
+    pushUndo();
+    const [moved]=m.tools.splice(_dragToolIdx,1);
+    m.tools.splice(i,0,moved);
+    _dragToolIdx=null;
+    renderModuleDetail();markDirty();
+}
+function onToolDragEnd(){
+    _dragToolIdx=null;
+    document.querySelectorAll('.tool-badge').forEach(el=>el.classList.remove('dragging','drag-over'));
 }
 
-document.addEventListener('click',function(e){
-    if(_toolSelected!==null&&!e.target.closest('[id^="tool-badge-"]'))_clearToolSelection();
-});
-
-// — Input ajout outil —
+// — Input ajout outil avec suggestions —
 let _toolCommitting=false;
+let _allToolSuggestions=[];
+let _toolSuggestIdx=-1;
+let _commitTimer=null;
 
 function showToolInput(){
     const inp=document.getElementById('toolInput');if(!inp)return;
-    // Peupler les suggestions depuis tous les modules
-    const dl=document.getElementById('toolSuggestions');
-    if(dl){
-        const m=getModule(currentId);
-        const current=new Set((m?.tools||[]).map(t=>t.toLowerCase()));
-        const all=[...new Set(modules.flatMap(mod=>mod.tools||[]))]
-            .filter(t=>!current.has(t.toLowerCase()))
-            .sort((a,b)=>a.localeCompare(b));
-        dl.innerHTML=all.map(t=>`<option value="${escAttr(t)}"></option>`).join('');
-    }
+    _buildToolSuggestions();
     inp.style.display='inline-block';inp.value='';inp.focus();
     document.getElementById('addToolBtn').style.display='none';
+    filterToolSuggestions('');
 }
 
-function commitTool(inp){
+function _buildToolSuggestions(){
+    const m=getModule(currentId);
+    const current=new Set((m?.tools||[]).map(t=>t.toLowerCase()));
+    _allToolSuggestions=[...new Set(modules.flatMap(mod=>mod.tools||[]))]
+        .filter(t=>!current.has(t.toLowerCase()))
+        .sort((a,b)=>a.localeCompare(b));
+}
+
+function filterToolSuggestions(val){
+    const dd=document.getElementById('toolDropdown');if(!dd)return;
+    const lower=(val||'').toLowerCase();
+    const filtered=lower
+        ? _allToolSuggestions.filter(t=>t.toLowerCase().includes(lower))
+        : _allToolSuggestions;
+    if(filtered.length===0){dd.classList.remove('visible');_toolSuggestIdx=-1;return;}
+    _toolSuggestIdx=-1;
+    dd.innerHTML=filtered.map((t,i)=>{
+        const esc=escHtml(t);
+        const highlighted=lower?_highlightMatch(esc,lower):esc;
+        return `<div class="tool-dropdown-item" data-val="${escAttr(t)}" onmousedown="pickToolSuggestion(event,'${escAttr(t).replace(/'/g,"\\'")}')"><span class="text-[#cfa848]">${ICONS.penTool}</span>${highlighted}</div>`;
+    }).join('');
+    dd.classList.add('visible');
+}
+
+function _highlightMatch(html,query){
+    const idx=html.toLowerCase().indexOf(query.toLowerCase());
+    if(idx<0)return html;
+    return html.slice(0,idx)+'<strong>'+html.slice(idx,idx+query.length)+'</strong>'+html.slice(idx+query.length);
+}
+
+function pickToolSuggestion(e,val){
+    e.preventDefault(); // empêcher blur
+    const inp=document.getElementById('toolInput');
+    if(inp)inp.value=val;
+    _doCommitTool();
+}
+
+function _hideToolInput(){
+    const inp=document.getElementById('toolInput');if(inp)inp.style.display='none';
+    const dd=document.getElementById('toolDropdown');if(dd)dd.classList.remove('visible');
+    const b=document.getElementById('addToolBtn');if(b)b.style.display='';
+}
+
+function scheduleCommitTool(){
+    // Délai pour laisser le mousedown sur une suggestion se déclencher
+    if(_commitTimer)clearTimeout(_commitTimer);
+    _commitTimer=setTimeout(()=>_doCommitTool(),160);
+}
+
+function _doCommitTool(){
+    if(_commitTimer){clearTimeout(_commitTimer);_commitTimer=null;}
     if(_toolCommitting)return;
     _toolCommitting=true;
-    const v=inp.value.trim();
-    inp.value='';
-    inp.style.display='none';
-    const b=document.getElementById('addToolBtn');if(b)b.style.display='';
-    _toolCommitting=false;
-    if(!v||!currentId)return;
+    const inp=document.getElementById('toolInput');
+    const v=inp?inp.value.trim():'';
+    _hideToolInput();
+    if(!v||!currentId){_toolCommitting=false;return;}
     const m=getModule(currentId);
-    // Évite les doublons exacts
-    if((m.tools||[]).some(t=>t.toLowerCase()===v.toLowerCase()))return;
+    // Évite les doublons (ignorer la casse)
+    if((m.tools||[]).some(t=>t.toLowerCase()===v.toLowerCase())){
+        _toolCommitting=false;return;
+    }
     pushUndo();
     (m.tools=m.tools||[]).push(v);
+    _toolCommitting=false;
     renderModuleDetail();markDirty();
 }
 
 function handleToolKey(e,inp){
-    if(e.key==='Enter'){e.preventDefault();commitTool(inp);}
-    if(e.key==='Escape'){inp.value='';inp.style.display='none';const b=document.getElementById('addToolBtn');if(b)b.style.display='';}
+    const dd=document.getElementById('toolDropdown');
+    const items=dd?dd.querySelectorAll('.tool-dropdown-item'):[];
+    if(e.key==='ArrowDown'&&items.length){
+        e.preventDefault();
+        _toolSuggestIdx=Math.min(_toolSuggestIdx+1,items.length-1);
+        _updateSuggestHighlight(items);
+    }else if(e.key==='ArrowUp'&&items.length){
+        e.preventDefault();
+        _toolSuggestIdx=Math.max(_toolSuggestIdx-1,0);
+        _updateSuggestHighlight(items);
+    }else if(e.key==='Enter'){
+        e.preventDefault();
+        if(_toolSuggestIdx>=0&&items[_toolSuggestIdx]){
+            inp.value=items[_toolSuggestIdx].dataset.val;
+        }
+        _doCommitTool();
+    }else if(e.key==='Escape'){
+        if(_commitTimer){clearTimeout(_commitTimer);_commitTimer=null;}
+        _hideToolInput();
+    }
+}
+
+function _updateSuggestHighlight(items){
+    items.forEach((el,i)=>el.classList.toggle('active',i===_toolSuggestIdx));
+    if(items[_toolSuggestIdx])items[_toolSuggestIdx].scrollIntoView({block:'nearest'});
 }
 
 // ════ SCHEDULE ════════════════════════════════════════════════════════════════
@@ -823,6 +974,74 @@ renderModuleDetail();markDirty();}
 
 // ════ RENDUS ══════════════════════════════════════════════════════════════════
 function removeRendu(i){const m=getModule(currentId);if(!m)return;pushUndo();m.rendus.splice(i,1);_renduSelected=null;renderModuleDetail();markDirty();}
+
+// — Image pan (middle-click drag) & zoom (wheel) —
+function renduImgStyle(r){
+    const px=r.panX||0, py=r.panY||0, z=r.zoom||1;
+    if(!px&&!py&&z===1) return 'pointer-events:none;';
+    return `object-position:calc(50% + ${px}px) calc(50% + ${py}px);transform:scale(${z});pointer-events:none;`;
+}
+
+let _panState=null;
+
+function renduImgMouseDown(e,i){
+    // Middle button (button===1) = pan
+    if(e.button!==1) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const m=getModule(currentId); if(!m?.rendus?.[i]) return;
+    const r=m.rendus[i];
+    const wrap=e.currentTarget;
+    wrap.classList.add('panning');
+    _panState={i, startX:e.clientX, startY:e.clientY, origPanX:r.panX||0, origPanY:r.panY||0, wrap};
+
+    function onMove(ev){
+        if(!_panState) return;
+        const dx=ev.clientX-_panState.startX;
+        const dy=ev.clientY-_panState.startY;
+        r.panX=_panState.origPanX+dx;
+        r.panY=_panState.origPanY+dy;
+        const img=wrap.querySelector('img');
+        if(img) img.style.cssText=renduImgStyle(r);
+    }
+    function onUp(){
+        document.removeEventListener('mousemove',onMove);
+        document.removeEventListener('mouseup',onUp);
+        if(_panState){
+            _panState.wrap.classList.remove('panning');
+            _panState=null;
+            markDirty();
+            renderModuleDetail();
+        }
+    }
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+}
+
+function renduImgWheel(e,i){
+    e.preventDefault();
+    e.stopPropagation();
+    const m=getModule(currentId); if(!m?.rendus?.[i]) return;
+    const r=m.rendus[i];
+    const oldZoom=r.zoom||1;
+    const delta=e.deltaY>0?-0.05:0.05;
+    r.zoom=Math.round(Math.min(3,Math.max(0.3,oldZoom+delta))*100)/100;
+    const img=e.currentTarget.querySelector('img');
+    if(img) img.style.cssText=renduImgStyle(r);
+    // Show zoom badge briefly
+    const badge=document.getElementById('rendu-zoom-'+i);
+    if(badge){badge.textContent=Math.round(r.zoom*100)+'%';badge.classList.add('visible');}
+    clearTimeout(r._zoomTimer);
+    r._zoomTimer=setTimeout(()=>{if(badge)badge.classList.remove('visible');},900);
+    markDirty();
+}
+
+function resetRenduTransform(i){
+    const m=getModule(currentId); if(!m?.rendus?.[i]) return;
+    pushUndo();
+    m.rendus[i].panX=0; m.rendus[i].panY=0; m.rendus[i].zoom=1;
+    renderModuleDetail(); markDirty();
+}
 
 let _renduSelected = null; // index de la carte sélectionnée pour l'échange
 
@@ -887,12 +1106,18 @@ function moveModule(id,dir){
     const idx=modules.findIndex(m=>m.id===id);
     const ni=idx+dir;
     if(ni<0||ni>=modules.length)return;
+    pushUndo();
     [modules[idx],modules[ni]]=[modules[ni],modules[idx]];
     // Renumber weeks sequentially based on new position
     modules.forEach((m,i)=>m.week=i+1);
     renderModuleList();
     renderModuleDetail();
     markDirty();
+    // Scroll moved module into view
+    requestAnimationFrame(()=>{
+        const el=document.querySelector(`#module-list > div:nth-child(${ni+1})`);
+        if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+    });
 }
 
 // ════ ADD / DELETE MODULE ═════════════════════════════════════════════════════
@@ -900,15 +1125,13 @@ function addModule(){
     const newId=modules.length>0?Math.max(...modules.map(m=>m.id))+1:1;
     const newWeek=modules.length>0?Math.max(...modules.map(m=>m.week))+1:1;
     modules.push({id:newId,week:newWeek,title:'Nouveau module',category:'modeling',description:'',objective:'',tools:[],deliverables:[],schedule:[],rendus:[],extraBlocks:[],colors:{},heights:{}});
-    moduleListStart=Math.max(0,modules.length-MODULES_PER_PAGE);
     renderModuleList();selectModule(newId);markDirty();
 }
 function deleteCurrentModule(){
     if(!confirm('Supprimer ce module ?'))return;
     const idx=modules.findIndex(m=>m.id===currentId);
+    pushUndo();
     modules.splice(idx,1);currentId=null;dirty=true;
-    moduleListStart=Math.max(0,Math.min(moduleListStart,modules.length-MODULES_PER_PAGE));
-    if(moduleListStart<0)moduleListStart=0;
     renderModuleList();
     if(modules.length>0)selectModule(modules[Math.max(0,idx-1)].id);
     else document.getElementById('module-detail').innerHTML='<div class="flex items-center justify-center h-64 text-[#4a3426]/30 text-sm">Aucun module.</div>';
@@ -918,6 +1141,8 @@ function deleteCurrentModule(){
 async function saveAll(){
     setStatus('saving','Sauvegarde…');
     try{
+        // Nettoyer les propriétés transitoires (_zoomTimer) avant sauvegarde
+        modules.forEach(m=>(m.rendus||[]).forEach(r=>delete r._zoomTimer));
         const res=await fetch('/api/modules',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(modules)});
         const d=await res.json();
         if(d.ok){dirty=false;setStatus('saved','Sauvegardé ✓');}else setStatus('error',d.error||'Erreur');

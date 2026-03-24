@@ -246,7 +246,7 @@ const COURSE_DATA = [
     "week": 1,
     "title": "Box modeling « Fortiche »",
     "description": "Introduction au hardsurface stylisé avec une topologie propre.",
-    "category": "modeling",
+    "category": "workflow",
     "objective": "Créer un asset hardsurface stylisé détaillé (weapons, bâtiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé à la manière des studios d'animation.",
     "tools": [
       "Maya",
@@ -302,20 +302,28 @@ const COURSE_DATA = [
     "rendus": [
       {
         "student": "Ambre de Casanove",
-        "image": "images/Box_modelling/Ambre de casanove.jpg"
+        "image": "images/Box_modelling/Ambre de casanove.jpg",
+        "zoom": 1
       },
       {
         "student": "Luc Reynal",
-        "image": "images/Box_modelling/luc-reynal.jpg"
+        "image": "images/Box_modelling/luc-reynal.jpg",
+        "zoom": 1,
+        "panX": 0,
+        "panY": 0
       },
       {
         "student": "Sarah Larrieu",
-        "image": "images/Box_modelling/sarah-larrieu-manan.jpg"
+        "image": "images/Box_modelling/sarah-larrieu-manan.jpg",
+        "zoom": 1,
+        "panX": 0,
+        "panY": 0
       }
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "weekLabel": "Semaine"
   },
   {
     "id": 2,
@@ -552,15 +560,23 @@ const COURSE_DATA = [
       },
       {
         "student": "nikolas salon shot 4 1",
-        "image": "images/rendus/module_4/nikolas-salon-shot-4-1.jpg"
+        "image": "images/rendus/module_4/nikolas-salon-shot-4-1.jpg",
+        "zoom": 1
       },
       {
-        "student": "thibault de vaissiere vignette",
-        "image": "images/rendus/module_4/thibault-de-vaissiere-vignette.jpg"
+        "student": "alban zaragoza 01",
+        "image": "images/rendus/module_4/alban-zaragoza-01.jpg",
+        "zoom": 1,
+        "panX": 0,
+        "panY": 0
       },
       {
         "student": "ambre de casanove",
         "image": "images/rendus/module_4/ambre-de-casanove.jpg"
+      },
+      {
+        "student": "thibault de vaissiere vignette",
+        "image": "images/rendus/module_4/thibault-de-vaissiere-vignette.jpg"
       }
     ],
     "extraBlocks": [],
@@ -720,10 +736,10 @@ const COURSE_DATA = [
   {
     "id": 7,
     "week": 7,
-    "title": "Clean Scan",
-    "description": "Traitement de données scannées brutes.",
-    "category": "specialized",
-    "objective": "Apprendre à récupérer un scan 3D « sale » et en faire un mesh clean, projeté, texturable.",
+    "title": "Chara Sculpt Bust",
+    "description": "Création d'un character 3D stylisé : du sculpt haute résolution à la retopologie optimisée pour l'animation.",
+    "category": "sculpting",
+    "objective": "Créer un personnage stylisé complet en 3D. L'objectif est de capturer l'appeal, le dynamisme et les proportions du concept art lors du sculpt, puis de réaliser une retopologie propre (edge flow, quads) prête pour le rigging et l'animation faciale/corporelle.",
     "tools": [
       "ZBrush",
       "Maya",
@@ -731,36 +747,42 @@ const COURSE_DATA = [
       "Substance Designer"
     ],
     "deliverables": [
-      "Mesh propre (topo compatible prod)",
-      "Maps nettoyées (albedo, normal)"
+      "Fichier ZBrush (.zpr) avec le High Poly organisé par SubTools",
+      "1 asset Low Poly propre (quad-based, edge loops optimisés pour l'animation)",
+      "Export FBX/OBJ avec naming convention et hiérarchie corrects",
+      "Un rendu en niveau de gris sous plusieurs angles, mettant en valeur le sculpt au format 1920/1080"
     ],
     "schedule": [
       {
         "day": 1,
-        "title": "Analyse Scan",
+        "title": "Blockout & Proportions",
         "tasks": [
-          "Présentation données scan (raw dense mesh + textures)",
-          "Analyse des défauts (trous, noise, stretching)"
+          "Analyse du concept art et mise en place des références",
+          "Blockout des volumes primaires sous ZBrush avec des primitives",
+          "Validation de la silhouette, des proportions et de la ligne d'action"
         ]
       },
       {
         "day": 2,
-        "title": "Nettoyage ZBrush",
+        "title": "Sculpting - head neck",
         "tasks": [
-          "Trim, close holes, smoothing contrôlé"
+          "Fusion des volumes et anatomie stylisée",
+          "Focus sur l'appeal du visage (yeux, nez, bouche stylisés)",
+          "Affinage des formes secondaires (muscles simplifiés, mains, pieds)"
         ]
       },
       {
         "day": 3,
-        "title": "Retopo & UVs",
+        "title": "Sculpting - Bust",
         "tasks": [
-          "Retopo low poly (Blender/ZBrush) pour usage jeu/anim",
-          "UVs propres"
+          "Fusion des volumes et anatomie stylisée",
+          "Focus sur l'appeal du visage (yeux, nez, bouche stylisés)",
+          "Affinage des formes secondaires (muscles simplifiés, mains, pieds)"
         ]
       },
       {
         "day": 4,
-        "title": "Projection",
+        "title": "Sculpting Bust",
         "tasks": [
           "Projection détails (displace/normal)",
           "Re-projection textures (albedo) sur nouvelle topo"
@@ -768,10 +790,10 @@ const COURSE_DATA = [
       },
       {
         "day": 5,
-        "title": "Patching & Rendu",
+        "title": "Retopologie - Visage & Bust",
         "tasks": [
-          "Nettoyage Substance (patch, clone, painting)",
-          "Rendu avant/après"
+          "Nettoyage de la scene",
+          "retopologie en quad avec qua draw ou retopoflow"
         ]
       }
     ],
@@ -782,7 +804,7 @@ const COURSE_DATA = [
   },
   {
     "id": 9,
-    "week": 9,
+    "week": 8,
     "title": "Intégration IA dans un pipe 3D",
     "description": "Utilisation éthique et technique de l'IA.",
     "category": "specialized",
@@ -840,7 +862,7 @@ const COURSE_DATA = [
   },
   {
     "id": 10,
-    "week": 10,
+    "week": 9,
     "title": "Portfolio & Statuts Pro",
     "description": "Préparation à l'insertion professionnelle.",
     "category": "career",
@@ -904,11 +926,11 @@ const COURSE_DATA = [
   },
   {
     "id": 11,
-    "week": 11,
+    "week": 10,
     "title": "Handpaint",
     "category": "modeling",
     "description": "",
-    "objective": "",
+    "objective": "Comprendre et maîtriser la manipulation de la World Space Normal via le hand painting dans Substance Painter. L'objectif est de fausser l'éclairage pour donner un aspect \"peinture traditionnelle\" (brush strokes) dynamique qui réagit de manière stylisée à la lumière dans des moteurs de rendu temps réel ou offline.",
     "tools": [
       "substance painter",
       "blender/maya",
@@ -916,9 +938,168 @@ const COURSE_DATA = [
       "substance designer",
       "substance designer"
     ],
-    "deliverables": [],
-    "schedule": [],
-    "rendus": [],
+    "deliverables": [
+      "1 asset texturé (Base Color + World Space Normal modifiée)",
+      "Fichier Substance Painter (.spp) propre et organisé",
+      "Rendus finaux (Marmoset, Unreal ou Arnold) mettant en valeur la réaction à la lumière"
+    ],
+    "schedule": [
+      {
+        "day": 1,
+        "title": "Théorie & Setup",
+        "tasks": [
+          "Comprendre la World Space Normal vs Tangent Space Normal",
+          "Setup du projet dans Substance Painter (Baking, configuration du shader pour le hand paint)"
+        ]
+      },
+      {
+        "day": 2,
+        "title": "Base Color & Blocking",
+        "tasks": [
+          "Mise en place des aplats de couleurs (Base Color)",
+          "Définition des volumes principaux et de la palette de couleurs"
+        ]
+      },
+      {
+        "day": 3,
+        "title": "Peinture de la World Space Normal",
+        "tasks": [
+          "Création de brush strokes directionnels",
+          "Peinture des informations de normale pour fausser l'éclairage (creux, reliefs stylisés)"
+        ]
+      },
+      {
+        "day": 4,
+        "title": "Affinage & Tests d'éclairage",
+        "tasks": [
+          "Affinage des coups de pinceau et de la transition des normales",
+          "Tests d'éclairage tournant dans Substance Painter pour vérifier la réaction des volumes"
+        ]
+      },
+      {
+        "day": 5,
+        "title": "Export & Rendu Final",
+        "tasks": [
+          "Export des textures (Base Color, Normal, etc.)",
+          "Setup de la scène de rendu (Marmoset Toolbag, Unreal Engine ou Arnold)",
+          "Lighting final et rendu des images/vidéos"
+        ]
+      }
+    ],
+    "rendus": [
+      {
+        "student": "antoine bardon",
+        "image": "images/rendus/module_11/antoine-bardon_1774313060.jpg"
+      },
+      {
+        "student": "leo cirette",
+        "image": "images/rendus/module_11/leo_cirette.jpg",
+        "zoom": 1
+      },
+      {
+        "student": "Luc reynal",
+        "image": "images/rendus/module_11/Luc_reynal.jpg",
+        "zoom": 1,
+        "panX": 0,
+        "panY": 0
+      },
+      {
+        "student": "Valentine Metge",
+        "image": "images/rendus/module_11/Valentine_Metge.jpg",
+        "zoom": 1,
+        "panX": 36,
+        "panY": -1
+      }
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {
+      "deliverablesCard": ""
+    }
+  },
+  {
+    "id": 12,
+    "week": 11,
+    "title": "Substance designer",
+    "category": "texturing",
+    "description": "",
+    "objective": "Comprendre la logique procédurale et maîtriser l'interface nodale de Substance Designer. L'objectif est de créer un matériau complet de A à Z, en gérant parfaitement la Height, la Normal, la Roughness et la Base Color, tout en gardant un graphe optimisé et paramétrable.",
+    "tools": [
+      "substance designer",
+      "Marmoset",
+      "Unreal"
+    ],
+    "deliverables": [
+      "Fichier Substance (.sbs) propre, commenté et organisé avec des frames",
+      "Set de textures PBR exportées (Base Color, Normal, Roughness, AO, Height)",
+      "Rendus finaux (Marmoset ou Unreal) mettant en valeur le matériau sous différents éclairages"
+    ],
+    "schedule": [
+      {
+        "day": 1,
+        "title": "Fondamentaux & Logique Nodale",
+        "tasks": [
+          "Prise en main de l'interface et logique procédurale",
+          "Utilisation des nodes de base (Shape, Blend, Transform 2D) et création de patterns simples"
+        ]
+      },
+      {
+        "day": 2,
+        "title": "Height Map & Relief",
+        "tasks": [
+          "Création des formes primaires et secondaires via la Height map",
+          "Ajout de micro-détails, usure et dommages de surface"
+        ]
+      },
+      {
+        "day": 3,
+        "title": "Roughness & Base Color",
+        "tasks": [
+          "Génération de la Roughness map basée sur le relief et l'usure",
+          "Création de masques complexes pour la Base Color et variations de teintes"
+        ]
+      },
+      {
+        "day": 4,
+        "title": "Paramétrisation & Optimisation",
+        "tasks": [
+          "Exposition de paramètres (couleur, niveau d'usure, répétition) pour créer un matériau dynamique",
+          "Organisation du graphe (Frames, Reroutes, Naming) et optimisation des performances"
+        ]
+      },
+      {
+        "day": 5,
+        "title": "Export & Présentation",
+        "tasks": [
+          "Configuration des outputs et export des maps PBR",
+          "Mise en place d'une scène de rendu (Marmoset Toolbag / Unreal) avec un éclairage soigné"
+        ]
+      }
+    ],
+    "rendus": [
+      {
+        "student": "alban zaragoza",
+        "image": "images/rendus/module_12/alban-zaragoza.jpg"
+      },
+      {
+        "student": "alicia burgaud",
+        "image": "images/rendus/module_12/alicia-burgaud.jpg",
+        "zoom": 1.15,
+        "panX": 0,
+        "panY": 0
+      },
+      {
+        "student": "lequeu leane",
+        "image": "images/rendus/module_12/lequeu-leane.jpg",
+        "panX": 96,
+        "panY": -3,
+        "zoom": 1.05
+      },
+      {
+        "student": "alban zaragoza 02",
+        "image": "images/rendus/module_12/alban-zaragoza_02.jpg"
+      }
+    ],
     "extraBlocks": [],
     "colors": {},
     "heights": {}
@@ -981,7 +1162,7 @@ function renderModuleList() {
                 </div>
                 <div>
                     <span class="text-xs font-bold uppercase tracking-wider ${isActive ? 'text-[#cfa848]' : 'text-[#4a3426]/50'}">
-                        Semaine ${m.week}
+                        ${m.weekLabel||'Semaine'} ${m.week}
                     </span>
                     <h3 class="font-semibold text-base leading-tight ${isActive ? 'text-[#f8f1e0]' : 'text-[#4a3426]'}">
                         ${m.title}
@@ -1039,9 +1220,9 @@ function renderModuleDetail() {
         <div class="banner-gradient mb-8">
             <div class="flex items-center gap-2 mb-3">
                 <span class="px-3 py-1 bg-[#cfa848]/15 text-[#4a3426] rounded-full text-xs font-bold uppercase tracking-widest border border-[#cfa848]/30">
-                    Module ${m.id}
+                    ${m.moduleLabel||'Module'} ${m.id}
                 </span>
-                <span class="text-[#4a3426]/40 text-sm font-medium">| Semaine ${m.week}</span>
+                <span class="text-[#4a3426]/40 text-sm font-medium">| ${m.weekLabel||'Semaine'} ${m.week}</span>
             </div>
             <h1 class="text-4xl md:text-5xl font-black text-[#4a3426] mb-4" style="line-height:1.2;${(m.colors&&m.colors.title)?'color:'+m.colors.title+';':''}">${m.title}</h1>
             <p class="text-lg text-[#5d4231] max-w-2xl leading-relaxed" style="${(m.colors&&m.colors.description)?'color:'+m.colors.description:'' }">${m.description}</p>
@@ -1095,7 +1276,7 @@ function renderModuleDetail() {
                 ${m.rendus.slice(0, 3).map(r => `
                 <div class="group relative overflow-hidden rounded-xl border-2 border-[#4a3426] bg-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1" onclick="openLightbox('${r.image.replace(/'/g, "\\'")}')">
                     <div class="aspect-square overflow-hidden bg-[#eaddcf]">
-                        <img src="${r.image}" alt="Rendu - ${r.student}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="${r.image}" alt="Rendu - ${r.student}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" style="${r.panX||r.panY||r.zoom?`object-position:calc(50% + ${r.panX||0}px) calc(50% + ${r.panY||0}px);transform:scale(${r.zoom||1});transform-origin:center center;`:''}">
                     </div>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#4a3426]/90 via-[#4a3426]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
                         <div>
@@ -1195,7 +1376,8 @@ function openGallery(moduleId) {
         const safe = r.image.replace(/'/g, "\\'");
         return `<div onclick="openLightbox('${safe}')" style="width:200px;cursor:pointer;flex:0 0 200px;">
             <div style="width:200px;height:200px;overflow:hidden;border-radius:12px;border:1px solid rgba(207,168,72,0.3);background:#eaddcf;">
-                <img src="${r.image}" alt="${r.student}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.07)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="${r.image}" alt="${r.student}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;${r.panX||r.panY||r.zoom?`object-position:calc(50% + ${r.panX||0}px) calc(50% + ${r.panY||0}px);transform:scale(${r.zoom||1});transform-origin:center center;`:''}"
+                    onmouseover="this.style.transform='scale(${((r.zoom||1)*1.07).toFixed(2)})'" onmouseout="this.style.transform='scale(${r.zoom||1})'">
             </div>
             <p style="margin-top:8px;text-align:center;font-size:13px;color:rgba(248,241,224,0.8);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.student}</p>
         </div>`;
