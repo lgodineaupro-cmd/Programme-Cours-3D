@@ -221,6 +221,76 @@ def update_html_modules(html: str, modules: list) -> str:
 
 
 # ---------------------------------------------------------------------------
+# SITE_SETTINGS extraction / injection
+# ---------------------------------------------------------------------------
+
+def find_site_settings_bounds(html: str):
+    """Return (start, end) char positions of 'const SITE_SETTINGS = {...};' in html."""
+    start_match = re.search(r'const SITE_SETTINGS\s*=\s*(\{)', html)
+    if not start_match:
+        return None, None
+
+    brace_start = start_match.start(1)
+    depth = 0
+    i = brace_start
+    in_string = False
+    string_char = None
+
+    while i < len(html):
+        c = html[i]
+        if in_string:
+            if c == '\\':
+                i += 2
+                continue
+            if c == string_char:
+                in_string = False
+        else:
+            if c in ('"', "'", '`'):
+                in_string = True
+                string_char = c
+            elif c == '{':
+                depth += 1
+            elif c == '}':
+                depth -= 1
+                if depth == 0:
+                    end = i + 1
+                    if end < len(html) and html[end] == ';':
+                        end += 1
+                    return start_match.start(), end
+        i += 1
+
+    return None, None
+
+
+def extract_site_settings(html: str) -> dict:
+    """Extract SITE_SETTINGS from HTML and return as Python dict."""
+    start, end = find_site_settings_bounds(html)
+    if start is None:
+        return {"siteTitle": "3D Masterclass", "siteSubtitle": "Syllabus Interactif", "orgButton": "Organisation", "siteBadge": "Parcours Pro \u2022 10 Semaines"}
+
+    obj_start = html.index('{', start)
+    obj_str = html[obj_start:end].rstrip(';')
+
+    try:
+        return json.loads(obj_str)
+    except json.JSONDecodeError:
+        return {"siteTitle": "3D Masterclass", "siteSubtitle": "Syllabus Interactif", "orgButton": "Organisation", "siteBadge": "Parcours Pro \u2022 10 Semaines"}
+
+
+def site_settings_to_js(settings: dict) -> str:
+    """Serialise site settings as a JS const declaration."""
+    return 'const SITE_SETTINGS = ' + json.dumps(settings, ensure_ascii=False, indent=2) + ';'
+
+
+def update_html_site_settings(html: str, settings: dict) -> str:
+    """Replace the SITE_SETTINGS declaration in html."""
+    start, end = find_site_settings_bounds(html)
+    if start is None:
+        return html
+    return html[:start] + site_settings_to_js(settings) + html[end:]
+
+
+# ---------------------------------------------------------------------------
 # HTTP request handler
 # ---------------------------------------------------------------------------
 
@@ -270,6 +340,14 @@ class EditorHandler(http.server.BaseHTTPRequestHandler):
             except Exception as e:
                 self._send_error(str(e))
 
+        elif path == '/api/settings':
+            try:
+                html = INDEX_HTML.read_text(encoding='utf-8')
+                settings = extract_site_settings(html)
+                self._send_json(settings)
+            except Exception as e:
+                self._send_error(str(e))
+
         elif path.startswith('/images/'):
             rel = urllib.parse.unquote(path[1:])  # strip leading / and decode %20, %C3%A9, etc.
             # Prevent path traversal
@@ -290,6 +368,8 @@ class EditorHandler(http.server.BaseHTTPRequestHandler):
 
         if path == '/api/modules':
             self._handle_save_modules()
+        elif path == '/api/settings':
+            self._handle_save_settings()
         elif path == '/api/upload':
             self._handle_upload()
         elif path == '/api/publish':
@@ -339,6 +419,23 @@ class EditorHandler(http.server.BaseHTTPRequestHandler):
             new_html = update_html_modules(html, modules)
 
             # Backup before writing
+            backup = INDEX_HTML.with_suffix('.html.bak')
+            shutil.copy2(INDEX_HTML, backup)
+
+            INDEX_HTML.write_text(new_html, encoding='utf-8')
+            self._send_json({'ok': True})
+        except Exception as e:
+            self._send_error(str(e))
+
+    def _handle_save_settings(self):
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(length)
+            settings = json.loads(body)
+
+            html = INDEX_HTML.read_text(encoding='utf-8')
+            new_html = update_html_site_settings(html, settings)
+
             backup = INDEX_HTML.with_suffix('.html.bak')
             shutil.copy2(INDEX_HTML, backup)
 

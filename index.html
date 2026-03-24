@@ -47,18 +47,18 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
-                    <span class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Syllabus Interactif</span>
+                    <h1 id="nav-title" class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
+                    <span id="nav-subtitle" class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Syllabus Interactif</span>
                 </div>
             </div>
             <div class="flex items-center gap-4">
                 <button id="orgButton" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all duration-200 border border-[#b8922e] shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <span class="text-sm text-[#4a3426] font-bold">Organisation</span>
+                    <span id="nav-orgButton" class="text-sm text-[#4a3426] font-bold">Organisation</span>
                 </button>
                 <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
-                    <span class="text-sm text-[#f8f1e0] font-medium hidden sm:inline">Parcours Pro &bull; 10 Semaines</span>
+                    <span id="nav-badge" class="text-sm text-[#f8f1e0] font-medium hidden sm:inline">Parcours Pro &bull; 10 Semaines</span>
                 </div>
             </div>
         </div>
@@ -234,6 +234,12 @@
 
 <script>
 // ========================== DATA ==========================
+const SITE_SETTINGS = {
+  "siteTitle": "3D Masterclass",
+  "siteSubtitle": "Syllabus Interactif",
+  "orgButton": "Organisation",
+  "siteBadge": "Parcours Pro \u2022 10 Semaines"
+};
 const COURSE_DATA = [
   {
     "id": 1,
@@ -1365,6 +1371,18 @@ function selectModule(id) {
 
 
 // Initial render
+(function applySiteSettings(){
+    const s=SITE_SETTINGS;
+    const t=document.getElementById('nav-title');
+    const st=document.getElementById('nav-subtitle');
+    const ob=document.getElementById('nav-orgButton');
+    const b=document.getElementById('nav-badge');
+    if(t&&s.siteTitle) t.textContent=s.siteTitle;
+    if(st&&s.siteSubtitle) st.textContent=s.siteSubtitle;
+    if(ob&&s.orgButton) ob.textContent=s.orgButton;
+    if(b&&s.siteBadge) b.textContent=s.siteBadge;
+    if(s.siteTitle) document.title=s.siteTitle+' - Programme de Cours';
+})();
 renderModuleList();
 renderModuleDetail();
 

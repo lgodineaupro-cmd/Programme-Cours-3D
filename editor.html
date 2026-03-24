@@ -125,11 +125,30 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
             </div>
             <div>
-                <h1 class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
-                <span class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Éditeur de Syllabus</span>
+                <input id="ed-siteTitle" type="text" value="3D Masterclass"
+                       class="bg-transparent text-[#f8f1e0] font-bold text-lg leading-none border-none outline-none w-48 placeholder-[#f8f1e0]/40 hover:bg-white/10 focus:bg-white/10 rounded px-1 -ml-1 transition"
+                       placeholder="Titre du site" oninput="onSettingChange()">
+                <input id="ed-siteSubtitle" type="text" value="Syllabus Interactif"
+                       class="block bg-transparent text-xs text-[#cfa848] font-bold tracking-wider uppercase border-none outline-none w-48 placeholder-[#cfa848]/40 hover:bg-white/10 focus:bg-white/10 rounded px-1 -ml-1 transition"
+                       placeholder="Sous-titre" oninput="onSettingChange()">
             </div>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+            <!-- Editable Organisation button -->
+            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] border border-[#b8922e]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <input id="ed-orgButton" type="text" value="Organisation"
+                       class="bg-transparent text-sm text-[#4a3426] font-bold border-none outline-none w-28 placeholder-[#4a3426]/40 hover:bg-black/5 focus:bg-black/5 rounded px-1 -ml-1 transition"
+                       placeholder="Bouton" oninput="onSettingChange()">
+            </div>
+            <!-- Editable Badge -->
+            <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+                <input id="ed-siteBadge" type="text" value="Parcours Pro • 10 Semaines"
+                       class="bg-transparent text-sm text-[#f8f1e0] font-medium border-none outline-none w-52 placeholder-[#f8f1e0]/40 hover:bg-white/10 focus:bg-white/10 rounded px-1 -ml-1 transition"
+                       placeholder="Badge" oninput="onSettingChange()">
+            </div>
+            <!-- Save / Publish -->
             <span id="saveStatus" class="spill s-idle">Chargement…</span>
             <button onclick="saveAll()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all duration-200 border border-[#b8922e] shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5 text-sm text-[#4a3426] font-bold">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -210,6 +229,7 @@ function getModuleIcon(cat,title){
 
 // ════ STATE ══════════════════════════════════════════════════════════════════
 let modules=[], currentId=null, dirty=false;
+let siteSettings={siteTitle:'3D Masterclass',siteSubtitle:'Syllabus Interactif',orgButton:'Organisation',siteBadge:'Parcours Pro • 10 Semaines'};
 let undoStack=[]; const UNDO_LIMIT=100;
 
 // ════ COLOR PICKER ═══════════════════════════════════════════════════════════
@@ -379,12 +399,27 @@ async function init(){
         }
     });
     try{
-        const res=await fetch('/api/modules');
-        modules=await res.json();
+        const [modRes, setRes] = await Promise.all([fetch('/api/modules'), fetch('/api/settings')]);
+        modules=await modRes.json();
+        if(setRes.ok){ siteSettings=await setRes.json(); applySiteSettings(); }
         renderModuleList();
         if(modules.length>0)selectModule(modules[0].id);
         setStatus('idle','Prêt');
     }catch(e){setStatus('error','Erreur serveur');console.error(e);}
+}
+
+function applySiteSettings(){
+    document.getElementById('ed-siteTitle').value=siteSettings.siteTitle||'';
+    document.getElementById('ed-siteSubtitle').value=siteSettings.siteSubtitle||'';
+    document.getElementById('ed-orgButton').value=siteSettings.orgButton||'';
+    document.getElementById('ed-siteBadge').value=siteSettings.siteBadge||'';
+}
+function onSettingChange(){
+    siteSettings.siteTitle=document.getElementById('ed-siteTitle').value;
+    siteSettings.siteSubtitle=document.getElementById('ed-siteSubtitle').value;
+    siteSettings.orgButton=document.getElementById('ed-orgButton').value;
+    siteSettings.siteBadge=document.getElementById('ed-siteBadge').value;
+    markDirty();
 }
 
 // ════ HELPERS ════════════════════════════════════════════════════════════════
@@ -1143,9 +1178,13 @@ async function saveAll(){
     try{
         // Nettoyer les propriétés transitoires (_zoomTimer) avant sauvegarde
         modules.forEach(m=>(m.rendus||[]).forEach(r=>delete r._zoomTimer));
-        const res=await fetch('/api/modules',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(modules)});
-        const d=await res.json();
-        if(d.ok){dirty=false;setStatus('saved','Sauvegardé ✓');}else setStatus('error',d.error||'Erreur');
+        const [modRes, setRes] = await Promise.all([
+            fetch('/api/modules',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(modules)}),
+            fetch('/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(siteSettings)})
+        ]);
+        const d=await modRes.json();
+        const s=await setRes.json();
+        if(d.ok && s.ok){dirty=false;setStatus('saved','Sauvegardé ✓');}else setStatus('error',d.error||s.error||'Erreur');
     }catch(e){setStatus('error','Erreur réseau');console.error(e);}
 }
 async function publishAndView(){
