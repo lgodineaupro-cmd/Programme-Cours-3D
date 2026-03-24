@@ -802,7 +802,25 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": [],
+    "rendus": [
+      {
+        "student": "emilie morin",
+        "image": "images/rendus/module_7/emilie-morin.jpg"
+      },
+      {
+        "student": "ilies abdou",
+        "image": "images/rendus/module_7/ilies_abdou.jpg",
+        "zoom": 1
+      },
+      {
+        "student": "maxence groyer",
+        "image": "images/rendus/module_7/maxence-groyer.jpg"
+      },
+      {
+        "student": "maxime guinaudeau",
+        "image": "images/rendus/module_7/maxime-guinaudeau.jpg"
+      }
+    ],
     "extraBlocks": [],
     "colors": {},
     "heights": {}
@@ -869,11 +887,13 @@ const COURSE_DATA = [
       },
       {
         "student": "ComfyUI 00006 ",
-        "image": "images/rendus/module_9/ComfyUI_00006_.png"
+        "image": "images/rendus/module_9/ComfyUI_00006_.png",
+        "zoom": 1.35
       },
       {
         "student": "ComfyUI 00644 ",
-        "image": "images/rendus/module_9/ComfyUI_00644_.png"
+        "image": "images/rendus/module_9/ComfyUI_00644_.png",
+        "zoom": 1
       },
       {
         "student": "ComfyUI 00611 ",
@@ -1021,7 +1041,8 @@ const COURSE_DATA = [
     "rendus": [
       {
         "student": "antoine bardon",
-        "image": "images/rendus/module_11/antoine-bardon_1774313060.jpg"
+        "image": "images/rendus/module_11/antoine-bardon_1774313060.jpg",
+        "zoom": 1
       },
       {
         "student": "leo cirette",
