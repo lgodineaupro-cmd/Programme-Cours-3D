@@ -17,7 +17,7 @@
     [contenteditable]:hover{outline:1.5px dashed rgba(207,168,72,.7);outline-offset:4px}
     [contenteditable]:focus{outline:2px solid #cfa848 !important;outline-offset:4px;background-color:rgba(207,168,72,.04)}
     .del-btn{opacity:0;transition:opacity .15s}.hover-group:hover .del-btn{opacity:1}
-    .tool-input{display:none;padding:4px 10px;border-radius:6px;border:1.5px dashed #cfa848;background:rgba(207,168,72,.06);font-size:.875rem;color:#4a3426;outline:none;width:110px;font-family:'Inter',sans-serif}
+    .tool-input{display:none;padding:4px 10px;border-radius:6px;border:1.5px dashed #cfa848;background:rgba(207,168,72,.06);font-size:.875rem;color:#4a3426;outline:none;width:160px;font-family:'Inter',sans-serif}
     .tool-input:focus{border-style:solid;background:rgba(207,168,72,.1)}
     .meta-input{background:transparent;border:none;border-bottom:1.5px solid rgba(207,168,72,.4);outline:none;color:rgba(74,52,38,.55);font-family:'Inter',sans-serif;font-size:.875rem;transition:border-color .15s}
     .meta-input:focus{border-bottom-color:#cfa848;color:#4a3426}
@@ -31,15 +31,26 @@
     .v-resize{display:flex;justify-content:center;align-items:center;height:12px;cursor:ns-resize;color:rgba(207,168,72,.5);user-select:none;margin-top:4px}
     .v-resize:hover{color:#cfa848}
     /* color picker popover */
-    #colorPop{position:fixed;z-index:9999;background:#fff;border:1px solid #eaddcf;border-radius:12px;padding:10px 12px;box-shadow:0 8px 32px rgba(74,52,38,.18);display:none;align-items:center;gap:8px;flex-wrap:wrap;width:220px}
+    #colorPop{position:fixed;z-index:9999;background:#fff;border:1px solid #eaddcf;border-radius:14px;padding:10px 12px;box-shadow:0 8px 32px rgba(74,52,38,.2);display:none;flex-direction:column;gap:0;width:260px}
     #colorPop.visible{display:flex}
-    .cp-swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .1s,border-color .1s;flex-shrink:0}
-    .cp-swatch:hover{transform:scale(1.2);border-color:#cfa848}
-    #cpNative{width:28px;height:28px;border:none;border-radius:50%;padding:0;cursor:pointer;background:none;overflow:hidden;flex-shrink:0}
+    #cpLabel{font-size:11px;font-weight:800;color:#4a3426;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
+    #cpPresets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+    #cpRecentRow{width:100%;margin-bottom:6px}
+    #cpRecentDivider{font-size:9px;color:rgba(74,52,38,.35);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+    #cpRecent{display:flex;gap:5px;flex-wrap:wrap}
+    #cpTools{display:flex;align-items:center;gap:5px;border-top:1px solid #eaddcf;padding-top:8px;margin-top:3px}
+    .cp-swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .1s,border-color .1s;flex-shrink:0;box-shadow:0 1px 3px rgba(74,52,38,.12)}
+    .cp-swatch:hover,.cp-swatch.active{transform:scale(1.18);border-color:#cfa848}
+    #cpNative{width:26px;height:26px;border:none;border-radius:50%;padding:0;cursor:pointer;background:none;overflow:hidden;flex-shrink:0;outline:2px solid #eaddcf;outline-offset:1px;transition:outline-color .12s}
     #cpNative::-webkit-color-swatch-wrapper{padding:0}
-    #cpNative::-webkit-color-swatch{border-radius:50%;border:2px solid #eaddcf}
-    .cp-reset{font-size:10px;font-weight:700;color:#4a3426;background:#f8f1e0;border:1px solid #eaddcf;border-radius:6px;padding:2px 7px;cursor:pointer;white-space:nowrap}
-    .cp-reset:hover{border-color:#cfa848;color:#cfa848}
+    #cpNative::-webkit-color-swatch{border-radius:50%;border:none}
+    #cpNative:hover{outline-color:#cfa848}
+    .cp-btn{font-size:10px;font-weight:700;color:#4a3426;background:#f8f1e0;border:1px solid #eaddcf;border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;transition:border-color .12s,color .12s;line-height:1.4}
+    .cp-btn:hover{border-color:#cfa848;color:#cfa848}
+    .cp-btn:disabled{opacity:.3;cursor:default}
+    #cpApplyAllRow{border-top:1px solid #eaddcf;padding-top:7px;margin-top:7px}
+    #cpApplyAll{width:100%;font-size:10px;font-weight:800;color:#fff;background:linear-gradient(135deg,#4a3426,#6b4e38);border:none;border-radius:7px;padding:5px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:opacity .12s;letter-spacing:.03em}
+    #cpApplyAll:hover{opacity:.85}
     /* left-col card that is color-target for its background */
     .left-card{position:relative}
     .card-color-btn{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(207,168,72,.4);background:#f8f1e0;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
@@ -49,18 +60,43 @@
 </head>
 <body class="bg-[#f8f1e0] text-[#4a3426] min-h-screen">
 
-<!-- COLOR PICKER POPOVER (global, appended to body) -->
+<!-- COLOR PICKER POPOVER -->
 <div id="colorPop">
-    <span id="cpLabel" style="font-size:11px;font-weight:700;color:#4a3426;width:100%;margin-bottom:2px">Couleur</span>
-    <span class="cp-swatch" style="background:#4a3426" data-c="#4a3426"></span>
-    <span class="cp-swatch" style="background:#cfa848" data-c="#cfa848"></span>
-    <span class="cp-swatch" style="background:#5d4231" data-c="#5d4231"></span>
-    <span class="cp-swatch" style="background:#e05a4e" data-c="#e05a4e"></span>
-    <span class="cp-swatch" style="background:#3d9464" data-c="#3d9464"></span>
-    <span class="cp-swatch" style="background:#2e6db4" data-c="#2e6db4"></span>
-    <span class="cp-swatch" style="background:#f8f1e0" data-c="#f8f1e0;border:1px solid #eaddcf"></span>
-    <input type="color" id="cpNative" value="#4a3426" title="Couleur personnalisée">
-    <button class="cp-reset" id="cpReset">Réinitialiser</button>
+    <span id="cpLabel">Couleur</span>
+    <div id="cpPresets">
+        <span class="cp-swatch" style="background:#4a3426" data-c="#4a3426"></span>
+        <span class="cp-swatch" style="background:#cfa848" data-c="#cfa848"></span>
+        <span class="cp-swatch" style="background:#5d4231" data-c="#5d4231"></span>
+        <span class="cp-swatch" style="background:#e05a4e" data-c="#e05a4e"></span>
+        <span class="cp-swatch" style="background:#3d9464" data-c="#3d9464"></span>
+        <span class="cp-swatch" style="background:#2e6db4" data-c="#2e6db4"></span>
+        <span class="cp-swatch" style="background:#f0b429" data-c="#f0b429"></span>
+        <span class="cp-swatch" style="background:#9b59b6" data-c="#9b59b6"></span>
+        <span class="cp-swatch" style="background:#f8f1e0;outline:1px solid #eaddcf" data-c="#f8f1e0"></span>
+        <span class="cp-swatch" style="background:#ffffff;outline:1px solid #eaddcf" data-c="#ffffff"></span>
+        <span class="cp-swatch" style="background:#1a1a1a" data-c="#1a1a1a"></span>
+    </div>
+    <!-- Recent colors (hidden until first use) -->
+    <div id="cpRecentRow" style="display:none">
+        <span id="cpRecentDivider">Récentes</span>
+        <div id="cpRecent"></div>
+    </div>
+    <!-- Tools row -->
+    <div id="cpTools">
+        <input type="color" id="cpNative" value="#4a3426" title="Ouvrir la palette">
+        <button id="cpEyedropper" class="cp-btn" title="Pipette — cliquer sur n'importe quelle couleur de la page">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8-1.3 1 .4.4a2.1 2.1 0 1 1-3 3L6.4 11.2"/></svg>
+            Pipette
+        </button>
+        <button id="cpReset" class="cp-btn" style="margin-left:auto;color:#e05a4e" title="Réinitialiser la couleur">✕ Reset</button>
+    </div>
+    <!-- Apply to all similar -->
+    <div id="cpApplyAllRow" style="display:none">
+        <button id="cpApplyAll">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span id="cpApplyAllLabel">Appliquer à tous</span>
+        </button>
+    </div>
 </div>
 
 <!-- NAVBAR -->
@@ -81,9 +117,9 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 Sauvegarder
             </button>
-            <a href="index.html" target="_blank" class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30 text-sm text-[#f8f1e0] font-medium hover:border-[#cfa848] transition-colors" style="text-decoration:none;">
+            <a href="#" onclick="publishAndView();return false;" class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30 text-sm text-[#f8f1e0] font-medium hover:border-[#cfa848] transition-colors" style="text-decoration:none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Voir le syllabus
+                Publier &amp; voir
             </a>
         </div>
     </div>
@@ -163,22 +199,44 @@ function getModuleIcon(cat,title){
 // ════ STATE ══════════════════════════════════════════════════════════════════
 let modules=[], currentId=null, dirty=false, moduleListStart=0;
 const MODULES_PER_PAGE=4;
+let undoStack=[]; const UNDO_LIMIT=100;
 
 // ════ COLOR PICKER ═══════════════════════════════════════════════════════════
-// colorTarget: { el, key } where key is a dot-path like 'title', 'objective', 'extra.0.bg', etc.
 let colorTarget = null;
+let recentColors = []; // survives until page close
 
 function initColorPicker(){
     const pop = document.getElementById('colorPop');
-    // Swatches
-    pop.querySelectorAll('.cp-swatch').forEach(sw=>{
+    // Preset swatches
+    pop.querySelectorAll('#cpPresets .cp-swatch').forEach(sw=>{
         sw.addEventListener('click',()=>applyColor(sw.dataset.c));
     });
-    // Native picker
+    // Native color picker
     const native = document.getElementById('cpNative');
-    native.addEventListener('input',()=>applyColor(native.value));
+    native.addEventListener('input',  e=>applyColor(e.target.value));
+    native.addEventListener('change', e=>applyColor(e.target.value));
+    // EyeDropper API (Chrome 95+ / Edge 95+)
+    const eyeBtn = document.getElementById('cpEyedropper');
+    if(!window.EyeDropper){
+        eyeBtn.disabled = true;
+        eyeBtn.title = 'Pipette non disponible sur ce navigateur (Chrome 95+ requis)';
+    } else {
+        eyeBtn.addEventListener('click', async ev=>{
+            ev.stopPropagation();
+            const savedTarget = colorTarget; // save before hideColorPicker nulls it
+            document.getElementById('colorPop').classList.remove('visible'); // hide visually only
+            colorTarget = savedTarget; // keep target alive for applyColor
+            try{
+                const result = await new EyeDropper().open();
+                applyColor(result.sRGBHex);
+            } catch(e){ /* cancelled */ }
+            hideColorPicker(); // now fully close
+        });
+    }
     // Reset
     document.getElementById('cpReset').addEventListener('click',()=>applyColor(null));
+    // Apply all
+    document.getElementById('cpApplyAll').addEventListener('click',()=>applyColorToAll());
     // Close on outside click
     document.addEventListener('mousedown', e=>{
         if(!pop.contains(e.target) && !e.target.closest('[data-cp-key]') && !e.target.closest('.card-color-btn')){
@@ -187,24 +245,87 @@ function initColorPicker(){
     });
 }
 
+function addToRecent(hex){
+    if(!hex||typeof hex!=='string'||hex.charAt(0)!=='#') return;
+    recentColors = [hex, ...recentColors.filter(c=>c.toLowerCase()!==hex.toLowerCase())].slice(0,10);
+    updateRecentRow();
+}
+function updateRecentRow(){
+    const row  = document.getElementById('cpRecentRow');
+    const cont = document.getElementById('cpRecent');
+    if(!recentColors.length){ row.style.display='none'; return; }
+    row.style.display='';
+    cont.innerHTML = recentColors.map(c=>`<span class="cp-swatch" style="background:${c}" data-c="${c}"></span>`).join('');
+    cont.querySelectorAll('.cp-swatch').forEach(sw=>{
+        sw.addEventListener('click',()=>applyColor(sw.dataset.c));
+    });
+}
+function getColorGroup(key){
+    const m=getModule(currentId); if(!m) return null;
+    if(/^dayBg\d+$/.test(key))      return{prefix:'dayBg',    label:'tous les fonds de jour',  count:m.schedule?.length||0};
+    if(/^dayIconBg\d+$/.test(key))  return{prefix:'dayIconBg',label:'toutes les icônes de jour',count:m.schedule?.length||0};
+    if(/^dayNum\d+$/.test(key))     return{prefix:'dayNum',   label:'tous les n° de jour',     count:m.schedule?.length||0};
+    if(/^dayTitle\d+$/.test(key))   return{prefix:'dayTitle', label:'tous les titres de jour', count:m.schedule?.length||0};
+    if(/^del\d+$/.test(key))        return{prefix:'del',      label:'tous les livrables',      count:m.deliverables?.length||0};
+    if(/^task\d+_\d+$/.test(key))   return{prefix:'task',     label:'toutes les tâches',       count:-1};
+    if(/^extraBg\d+$/.test(key))    return{prefix:'extraBg',  label:'tous les fonds de bloc',  count:m.extraBlocks?.length||0};
+    if(/^extraTitle\d+$/.test(key)) return{prefix:'extraTitle',label:'tous les titres de bloc', count:m.extraBlocks?.length||0};
+    if(/^extraBody\d+$/.test(key))  return{prefix:'extraBody', label:'tous les textes de bloc', count:m.extraBlocks?.length||0};
+    return null;
+}
+function applyColorToAll(){
+    if(!colorTarget) return;
+    const m=getModule(currentId); if(!m) return;
+    const grp=getColorGroup(colorTarget.key); if(!grp) return;
+    m.colors=m.colors||{};
+    const color=m.colors[colorTarget.key]; // colour που ήδη εφαρμόσαμε
+    if(grp.prefix==='task'){
+        (m.schedule||[]).forEach((day,di)=>{
+            (day.tasks||[]).forEach((_,ti)=>{
+                if(color==null) delete m.colors['task'+di+'_'+ti];
+                else m.colors['task'+di+'_'+ti]=color;
+            });
+        });
+    } else {
+        for(let i=0;i<grp.count;i++){
+            const k=grp.prefix+i;
+            if(color==null) delete m.colors[k]; else m.colors[k]=color;
+        }
+    }
+    markDirty();
+    renderModuleDetail();
+    hideColorPicker();
+}
+
 function showColorPicker(e, el, key, label, property){
     e.stopPropagation();
     colorTarget = {el, key, property: property||'color'};
+    _showPicker(e.currentTarget||e.target, label||'Couleur', key);
+}
+function _showPicker(triggerEl, label, key){
     const pop = document.getElementById('colorPop');
-    pop.querySelector('#cpLabel').textContent = label||'Couleur';
-    const rect = el.getBoundingClientRect();
-    const pw=220, ph=80;
-    let left = rect.left;
-    let top  = rect.bottom + 8;
-    if(left+pw > window.innerWidth) left = window.innerWidth - pw - 8;
-    if(top+ph  > window.innerHeight) top = rect.top - ph - 8;
-    pop.style.left = left+'px';
-    pop.style.top  = top+'px';
+    document.getElementById('cpLabel').textContent = label;
+    // Apply-all button visibility
+    const grp = getColorGroup(key);
+    const applyRow = document.getElementById('cpApplyAllRow');
+    if(grp && grp.count !== 0){
+        document.getElementById('cpApplyAllLabel').textContent = '\u2192 '+grp.label;
+        applyRow.style.display='';
+    } else {
+        applyRow.style.display='none';
+    }
+    // Position
+    const rect = triggerEl.getBoundingClientRect(), pw=260, ph=220;
+    let left = rect.left, top = rect.bottom + 8;
+    if(left+pw > window.innerWidth)  left = window.innerWidth  - pw - 8;
+    if(top +ph > window.innerHeight) top  = rect.top - ph - 8;
+    pop.style.left = Math.max(4,left)+'px';
+    pop.style.top  = Math.max(4,top)+'px';
     pop.classList.add('visible');
-    // Sync native input to current color
+    // Sync native input
     const m = getModule(currentId);
     const cur = m?.colors?.[key];
-    if(cur){ document.getElementById('cpNative').value = cur; }
+    document.getElementById('cpNative').value = cur||'#4a3426';
 }
 
 function hideColorPicker(){ document.getElementById('colorPop').classList.remove('visible'); colorTarget=null; }
@@ -212,16 +333,22 @@ function hideColorPicker(){ document.getElementById('colorPop').classList.remove
 function applyColor(color){
     if(!colorTarget) return;
     const m = getModule(currentId); if(!m) return;
+    pushUndo();
     m.colors = m.colors||{};
-    if(color===null){ delete m.colors[colorTarget.key]; }
-    else { m.colors[colorTarget.key]=color; }
-    // Apply inline to live element
+    if(color===null){
+        delete m.colors[colorTarget.key];
+    } else {
+        m.colors[colorTarget.key] = color;
+        addToRecent(color);
+        // Keep native picker in sync
+        const n=document.getElementById('cpNative'); if(n) n.value=color;
+    }
+    // Apply inline to live element (no re-render needed)
     if(colorTarget.el){
-        if(color===null){ colorTarget.el.style.removeProperty(colorTarget.property); }
-        else { colorTarget.el.style.setProperty(colorTarget.property, color); }
+        if(color===null) colorTarget.el.style.removeProperty(colorTarget.property);
+        else colorTarget.el.style.setProperty(colorTarget.property, color);
     }
     markDirty();
-    // Don't re-render — just update the live element
 }
 
 function getC(m, key, fallback){
@@ -232,6 +359,14 @@ function getC(m, key, fallback){
 async function init(){
     initColorPicker();
     initResizer();
+    document.addEventListener('keydown',e=>{
+        if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){
+            // Only intercept if not inside a contenteditable (let browser handle native undo there)
+            const tag=(document.activeElement?.tagName||'').toLowerCase();
+            const ce=document.activeElement?.isContentEditable;
+            if(!ce && tag!=='input' && tag!=='textarea'){e.preventDefault();undoStep();}
+        }
+    });
     try{
         const res=await fetch('/api/modules');
         modules=await res.json();
@@ -246,6 +381,16 @@ function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt
 function escAttr(s){return escHtml(s);}
 function getModule(id){return modules.find(m=>m.id===id);}
 function markDirty(){if(!dirty){dirty=true;setStatus('dirty','Non sauvegardé');}}
+function pushUndo(){undoStack.push(JSON.stringify(modules));if(undoStack.length>UNDO_LIMIT)undoStack.shift();}
+function undoStep(){
+    if(undoStack.length===0){setStatus('idle','Rien à annuler');setTimeout(()=>setStatus(dirty?'dirty':'idle',dirty?'Non sauvegardé':'Prêt'),1500);return;}
+    modules=JSON.parse(undoStack.pop());
+    renderModuleList();
+    const m=getModule(currentId);
+    if(m)renderModuleDetail();else if(modules.length>0)selectModule(modules[0].id);
+    dirty=true;setStatus('dirty','Annulé ↩');
+    setTimeout(()=>{if(dirty)setStatus('dirty','Non sauvegardé');},1200);
+}
 function setStatus(t,txt){const el=document.getElementById('saveStatus');el.className='spill s-'+t;el.textContent=txt;}
 function pastePlain(e){e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'));}
 function stopEnter(e){if(e.key==='Enter'){e.preventDefault();e.target.blur();}}
@@ -259,13 +404,22 @@ function cpBtn(key, label, property){
 // ════ SIDEBAR ════════════════════════════════════════════════════════════════
 function renderModuleList(){
     const c=document.getElementById('module-list');
-    c.innerHTML=modules.slice(moduleListStart,moduleListStart+MODULES_PER_PAGE).map(m=>{
+    c.innerHTML=modules.slice(moduleListStart,moduleListStart+MODULES_PER_PAGE).map((m,pi)=>{
         const a=m.id===currentId;
-        return`<button onclick="selectModule(${m.id})" class="w-full text-left p-4 rounded-xl border transition-all duration-300 group flex items-center justify-between ${a?'bg-[#4a3426] border-[#cfa848] shadow-[0_4px_0_rgba(207,168,72,0.3)]':'bg-white border-[#eaddcf] hover:border-[#cfa848] hover:bg-[#fdf7ec] shadow-sm'}">
-            <div class="flex items-center gap-4"><div class="p-3 rounded-lg ${a?'bg-[#cfa848] text-[#4a3426]':'bg-[#eaddcf] text-[#4a3426] group-hover:bg-[#cfa848]/30 transition-colors'}">${getModuleIcon(m.category,m.title)}</div>
-            <div><span class="text-xs font-bold uppercase tracking-wider ${a?'text-[#cfa848]':'text-[#4a3426]/50'}">Semaine ${m.week}</span>
-            <h3 class="font-semibold text-base leading-tight ${a?'text-[#f8f1e0]':'text-[#4a3426]'}">${escHtml(m.title)}</h3></div></div>
-            <span class="transition-transform ${a?'text-[#cfa848]':'text-[#4a3426]/30 opacity-0 group-hover:opacity-100'}">${ICONS.chevronRight}</span></button>`;
+        const gi=moduleListStart+pi; // global index in full modules array
+        const canUp=gi>0, canDn=gi<modules.length-1;
+        return`<div class="relative hover-group">
+            <button onclick="selectModule(${m.id})" class="w-full text-left p-4 pr-10 rounded-xl border transition-all duration-300 group flex items-center justify-between ${a?'bg-[#4a3426] border-[#cfa848] shadow-[0_4px_0_rgba(207,168,72,0.3)]':'bg-white border-[#eaddcf] hover:border-[#cfa848] hover:bg-[#fdf7ec] shadow-sm'}">
+                <div class="flex items-center gap-4"><div class="p-3 rounded-lg ${a?'bg-[#cfa848] text-[#4a3426]':'bg-[#eaddcf] text-[#4a3426] group-hover:bg-[#cfa848]/30 transition-colors'}">${getModuleIcon(m.category,m.title)}</div>
+                <div><span class="text-xs font-bold uppercase tracking-wider ${a?'text-[#cfa848]':'text-[#4a3426]/50'}">Semaine ${m.week}</span>
+                <h3 class="font-semibold text-base leading-tight ${a?'text-[#f8f1e0]':'text-[#4a3426]'}">${escHtml(m.title)}</h3></div></div>
+                <span class="${a?'text-[#cfa848]':'text-[#4a3426]/30 opacity-0 group-hover:opacity-100'}">${ICONS.chevronRight}</span>
+            </button>
+            <div class="del-btn absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-px z-10">
+                <button title="Monter" onclick="event.stopPropagation();moveModule(${m.id},-1)" ${canUp?'':'disabled'} class="w-6 h-6 flex items-center justify-center rounded ${a?'text-[#cfa848]/60 hover:text-[#cfa848] hover:bg-[#3a2418]':'text-[#4a3426]/30 hover:text-[#cfa848] hover:bg-[#f8f1e0]'} text-xs font-bold transition-colors disabled:opacity-20 disabled:cursor-not-allowed">↑</button>
+                <button title="Descendre" onclick="event.stopPropagation();moveModule(${m.id},1)" ${canDn?'':'disabled'} class="w-6 h-6 flex items-center justify-center rounded ${a?'text-[#cfa848]/60 hover:text-[#cfa848] hover:bg-[#3a2418]':'text-[#4a3426]/30 hover:text-[#cfa848] hover:bg-[#f8f1e0]'} text-xs font-bold transition-colors disabled:opacity-20 disabled:cursor-not-allowed">↓</button>
+            </div>
+        </div>`;
     }).join('');
     updatePaginationButtons();
 }
@@ -321,8 +475,14 @@ function renderModuleDetail(){
     const container=document.getElementById('module-detail');
 
     const toolsHtml=(m.tools||[]).map((t,i)=>`
-        <span class="hover-group flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#eaddcf] border border-[#cfa848]/30 text-[#4a3426] text-sm font-medium">
-            <span class="text-[#cfa848]">${ICONS.penTool}</span>${escHtml(t)}
+        <span id="tool-badge-${i}" class="hover-group flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#eaddcf] border border-[#cfa848]/30 text-[#4a3426] text-sm font-medium transition-all">
+            <span class="text-[#cfa848] shrink-0">${ICONS.penTool}</span>
+            <span contenteditable="true" spellcheck="false" style="outline:none;min-width:20px;cursor:text;"
+                onblur="updateTool(${i},this.innerText.trim())"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+                onpaste="pastePlain(event)"
+                onclick="event.stopPropagation()">${escHtml(t)}</span>
+            <button class="del-btn w-4 h-4 flex items-center justify-center rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs font-bold transition-colors" title="Déplacer (cliquer puis cliquer un autre outil)" onclick="selectTool(event,${i})">&#8644;</button>
             <button class="del-btn ml-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[#4a3426]/40 hover:text-[#e05a4e] hover:bg-[#e05a4e]/10 text-sm leading-none transition-colors" onclick="removeTool(${i})">×</button>
         </span>`).join('');
 
@@ -349,12 +509,20 @@ function renderModuleDetail(){
                 <button class="del-btn shrink-0 w-4 h-4 rounded-full bg-[#fdf7ec] border border-[#eaddcf] hover:border-[#e05a4e] text-[#4a3426]/30 hover:text-[#e05a4e] flex items-center justify-center text-xs transition-all" onclick="removeTask(${di},${ti})">×</button>
             </li>`).join('');
         const dayBg=getC(m,'dayBg'+di)?'background:'+getC(m,'dayBg'+di)+';':'';
+        const dayIconBg=getC(m,'dayIconBg'+di)||'#ffffff';
+        const dayNumC=getC(m,'dayNum'+di)||'#4a3426';
         return`
         <div class="hover-group bg-[#fdf7ec] border border-[#eaddcf] rounded-xl overflow-hidden hover:border-[#cfa848] transition-colors shadow-sm" style="${dayBg}">
             <div class="p-4 flex flex-col md:flex-row md:items-start gap-4">
-                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-lg flex flex-col items-center justify-center border border-[#eaddcf] hover:border-[#cfa848] transition-colors shadow-sm">
-                    <span class="text-xs text-[#4a3426]/40 uppercase font-bold">Jour</span>
-                    <span class="text-2xl font-bold text-[#4a3426]">${day.day}</span>
+                <div class="flex-shrink-0 flex flex-col items-center gap-0.5">
+                    <div id="dayIcon${di}" class="w-16 h-16 rounded-lg flex flex-col items-center justify-center border border-[#eaddcf] hover:border-[#cfa848] transition-colors shadow-sm" style="background:${dayIconBg};color:${dayNumC}">
+                        <span class="text-xs uppercase font-bold opacity-50">Jour</span>
+                        <span class="text-2xl font-bold">${day.day}</span>
+                    </div>
+                    <div class="del-btn flex gap-px justify-center">
+                        <button class="flex items-center px-1 py-0.5 rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs" title="Couleur chiffre" onclick="showColorPicker(event,document.getElementById('dayIcon${di}'),'dayNum${di}','N° jour','color')">${ICONS.paintBucket}</button>
+                        <button class="flex items-center px-1 py-0.5 rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs" title="Fond icône" onclick="showColorPickerBg(event,document.getElementById('dayIcon${di}'),'dayIconBg${di}')">${ICONS.paintBucket}<span style="font-size:9px">bg</span></button>
+                    </div>
                 </div>
                 <div class="flex-grow min-w-0">
                     <div class="flex items-center gap-2 mb-2">
@@ -381,7 +549,7 @@ function renderModuleDetail(){
         const textC=getC(m,'extraText'+bi)||'#5d4231';
         const h=m.heights?.['extraCard'+bi]||'';
         return`
-        <div class="left-card bg-[#f8f1e0] p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="extraCard${bi}" style="background:${bgC};${h?'min-height:'+h:''}" >
+        <div class="left-card hover-group bg-[#f8f1e0] p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="extraCard${bi}" style="background:${bgC};${h?'min-height:'+h:''}" >
             <div class="flex items-center gap-3 mb-3">
                 <span contenteditable="true" class="font-black text-xl text-[#4a3426] flex-1" data-cp-key="extraTitle${bi}"
                     style="${getC(m,'extraTitle'+bi)?'color:'+getC(m,'extraTitle'+bi):''}"
@@ -407,16 +575,19 @@ function renderModuleDetail(){
     const rendusCards=rc===0
         ?`<div class="col-span-3 flex items-center justify-center h-28 border-2 border-dashed border-[#cfa848]/30 rounded-xl text-[#4a3426]/30 text-sm">Aucun rendu — importez des images ci-dessus</div>`
         :(m.rendus||[]).map((r,i)=>`
-            <div class="hover-group relative overflow-hidden rounded-xl border-2 bg-white shadow-lg ${i<3?'border-[#4a3426]':'border-[#eaddcf]'}">
+            <div id="rendu-card-${i}" onclick="selectRendu(event,${i})"
+                class="hover-group relative overflow-hidden rounded-xl border-2 bg-white shadow-lg cursor-pointer transition-all duration-150 ${i<3?'border-[#4a3426]':'border-[#eaddcf]'}"
+                title="Cliquer pour sélectionner, puis cliquer une autre image pour les échanger">
                 ${i<3?'<div class="absolute top-2 left-2 z-10 px-2 py-0.5 bg-[#cfa848] rounded-full text-[#4a3426] text-xs font-black uppercase tracking-wider shadow-sm">Affiché</div>':''}
-                <div class="aspect-square overflow-hidden bg-[#eaddcf]"><img src="${escAttr(r.image)}" alt="${escAttr(r.student)}" class="w-full h-full object-cover"></div>
-                <div class="p-3">
+                <div class="aspect-square overflow-hidden bg-[#eaddcf]"><img src="${escAttr(r.image)}" alt="${escAttr(r.student)}" class="w-full h-full object-cover pointer-events-none" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;background:#fee2e2;color:#b91c1c;font-size:11px;font-weight:700;padding:8px;text-align:center;gap:4px;"><span style="font-size:22px;">⚠️</span><span>Image introuvable</span><span style="font-weight:400;opacity:.7;word-break:break-all;">${escHtml(r.image)}</span></div></div>
+                <div class="p-3" onclick="event.stopPropagation()">
                     <span contenteditable="true" class="block text-sm font-semibold text-[#4a3426]"
                         onblur="updateRenduStudent(${i},this.innerText.trim())"
                         oninput="markDirty()" onkeydown="stopEnter(event)" onpaste="pastePlain(event)">${escHtml(r.student)}</span>
                     <p class="text-xs text-[#4a3426]/30 mt-0.5 truncate">${escHtml(r.image)}</p>
                 </div>
-                <button onclick="removeRendu(${i})" class="del-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-[#e05a4e] text-white flex items-center justify-center font-bold shadow-md" title="Supprimer">×</button>
+                <!-- bouton supprimer -->
+                <button onclick="event.stopPropagation();removeRendu(${i})" class="del-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-[#e05a4e] text-white flex items-center justify-center font-bold shadow-md" title="Supprimer">&times;</button>
             </div>`).join('');
 
     const titleStyle=getC(m,'title')?`color:${getC(m,'title')};`:'';
@@ -459,7 +630,8 @@ function renderModuleDetail(){
             <div class="flex flex-wrap gap-2 mt-5 items-center">
                 ${toolsHtml}
                 <button id="addToolBtn" onclick="showToolInput()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-dashed border-[#cfa848]/50 text-[#4a3426]/40 text-sm font-medium hover:bg-[#eaddcf] hover:text-[#4a3426] hover:border-[#cfa848] transition-all">+ Outil</button>
-                <input type="text" id="toolInput" class="tool-input" placeholder="Ex: ZBrush" onblur="commitTool(this)" onkeydown="handleToolKey(event,this)">
+                <input type="text" id="toolInput" list="toolSuggestions" class="tool-input" placeholder="Ex: ZBrush" onblur="commitTool(this)" onkeydown="handleToolKey(event,this)">
+                <datalist id="toolSuggestions"></datalist>
             </div>
         </div>
 
@@ -468,7 +640,7 @@ function renderModuleDetail(){
             <div class="lg:col-span-1 space-y-6" id="leftCol">
 
                 <!-- Objectif card -->
-                <div class="left-card p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="objectiveCard" style="background:${objBg};${objH?'min-height:'+objH:''}">
+                <div class="left-card hover-group p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="objectiveCard" style="background:${objBg};${objH?'min-height:'+objH:''}">
                     <div class="flex items-center gap-3 mb-4 text-[#cfa848]">${ICONS.trophy}
                         <h2 class="font-black text-xl text-[#4a3426] flex-1">Objectif</h2>
                         <button class="del-btn flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs" onclick="showColorPickerBg(event,document.getElementById('objectiveCard'),'objectiveBg')" title="Fond">${ICONS.paintBucket}<span style="font-size:9px">bg</span></button>
@@ -482,7 +654,7 @@ function renderModuleDetail(){
                 </div>
 
                 <!-- Livrables card -->
-                <div class="left-card p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="deliverablesCard" style="background:${delBg};${delH?'min-height:'+delH:''}">
+                <div class="left-card hover-group p-6 rounded-2xl border border-[#eaddcf] shadow-sm relative" id="deliverablesCard" style="background:${delBg};${delH?'min-height:'+delH:''}">
                     <div class="flex items-center gap-3 mb-4 text-[#cfa848]">${ICONS.checkCircle}
                         <h2 class="font-black text-xl text-[#4a3426] flex-1">Livrables</h2>
                         <button class="del-btn flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[#4a3426]/25 hover:text-[#cfa848] text-xs" onclick="showColorPickerBg(event,document.getElementById('deliverablesCard'),'deliverablesBg')" title="Fond">${ICONS.paintBucket}<span style="font-size:9px">bg</span></button>
@@ -534,54 +706,171 @@ function renderModuleDetail(){
 // background-color variant of the color picker (targets element bg)
 function showColorPickerBg(e, el, key){
     e.stopPropagation();
-    const m=getModule(currentId);if(!m)return;
+    if(!getModule(currentId)) return;
     colorTarget={el,key,property:'background-color'};
-    const pop=document.getElementById('colorPop');
-    pop.querySelector('#cpLabel').textContent='Fond';
-    const rect=e.target.getBoundingClientRect(),pw=220,ph=80;
-    let left=rect.left,top=rect.bottom+8;
-    if(left+pw>window.innerWidth)left=window.innerWidth-pw-8;
-    if(top+ph>window.innerHeight)top=rect.top-ph-8;
-    pop.style.left=left+'px';pop.style.top=top+'px';
-    pop.classList.add('visible');
-    const cur=m.colors?.[key];
-    if(cur)document.getElementById('cpNative').value=cur;
+    _showPicker(e.currentTarget||e.target, 'Fond', key);
 }
 
 // ════ FIELD UPDATERS ══════════════════════════════════════════════════════════
-function updateField(f,v){const m=getModule(currentId);if(m){m[f]=v;markDirty();}}
-function updateDeliverable(i,v){const m=getModule(currentId);if(m?.deliverables)m.deliverables[i]=v,markDirty();}
-function updateDayTitle(di,v){const m=getModule(currentId);if(m?.schedule?.[di])m.schedule[di].title=v,markDirty();}
-function updateTask(di,ti,v){const m=getModule(currentId);if(m?.schedule?.[di]?.tasks)m.schedule[di].tasks[ti]=v,markDirty();}
-function updateRenduStudent(i,v){const m=getModule(currentId);if(m?.rendus?.[i])m.rendus[i].student=v,markDirty();}
-function updateExtraTitle(bi,v){const m=getModule(currentId);if(m?.extraBlocks?.[bi])m.extraBlocks[bi].title=v,markDirty();}
-function updateExtraBody(bi,v){const m=getModule(currentId);if(m?.extraBlocks?.[bi])m.extraBlocks[bi].body=v,markDirty();}
+function updateField(f,v){const m=getModule(currentId);if(m&&m[f]!==v){pushUndo();m[f]=v;markDirty();}}
+function updateDeliverable(i,v){const m=getModule(currentId);if(m?.deliverables&&m.deliverables[i]!==v){pushUndo();m.deliverables[i]=v;markDirty();}}
+function updateDayTitle(di,v){const m=getModule(currentId);if(m?.schedule?.[di]&&m.schedule[di].title!==v){pushUndo();m.schedule[di].title=v;markDirty();}}
+function updateTask(di,ti,v){const m=getModule(currentId);if(m?.schedule?.[di]?.tasks&&m.schedule[di].tasks[ti]!==v){pushUndo();m.schedule[di].tasks[ti]=v;markDirty();}}
+function updateRenduStudent(i,v){const m=getModule(currentId);if(m?.rendus?.[i]&&m.rendus[i].student!==v){pushUndo();m.rendus[i].student=v;markDirty();}}
+function updateExtraTitle(bi,v){const m=getModule(currentId);if(m?.extraBlocks?.[bi]&&m.extraBlocks[bi].title!==v){pushUndo();m.extraBlocks[bi].title=v;markDirty();}}
+function updateExtraBody(bi,v){const m=getModule(currentId);if(m?.extraBlocks?.[bi]&&m.extraBlocks[bi].body!==v){pushUndo();m.extraBlocks[bi].body=v;markDirty();}}
 
 // ════ DELIVERABLES ════════════════════════════════════════════════════════════
-function addDeliverable(){const m=getModule(currentId);if(!m)return;(m.deliverables=m.deliverables||[]).push('Nouveau livrable');renderModuleDetail();markDirty();}
-function removeDeliverable(i){const m=getModule(currentId);if(!m)return;m.deliverables.splice(i,1);renderModuleDetail();markDirty();}
+function addDeliverable(){const m=getModule(currentId);if(!m)return;pushUndo();(m.deliverables=m.deliverables||[]).push('Nouveau livrable');renderModuleDetail();markDirty();}
+function removeDeliverable(i){const m=getModule(currentId);if(!m)return;pushUndo();m.deliverables.splice(i,1);renderModuleDetail();markDirty();}
 
 // ════ TOOLS ═══════════════════════════════════════════════════════════════════
-function removeTool(i){const m=getModule(currentId);if(!m)return;m.tools.splice(i,1);renderModuleDetail();markDirty();}
-function showToolInput(){const i=document.getElementById('toolInput');if(!i)return;i.style.display='inline-block';i.value='';i.focus();document.getElementById('addToolBtn').style.display='none';}
-function commitTool(inp){const v=inp.value.trim();inp.style.display='none';const b=document.getElementById('addToolBtn');if(b)b.style.display='';if(!v||!currentId)return;const m=getModule(currentId);(m.tools=m.tools||[]).push(v);renderModuleDetail();markDirty();}
-function handleToolKey(e,inp){if(e.key==='Enter'){e.preventDefault();commitTool(inp);}if(e.key==='Escape'){inp.style.display='none';const b=document.getElementById('addToolBtn');if(b)b.style.display='';}}
+function removeTool(i){const m=getModule(currentId);if(!m)return;pushUndo();m.tools.splice(i,1);renderModuleDetail();markDirty();}
+
+function updateTool(i, val){
+    const m=getModule(currentId);if(!m)return;
+    if(!val){removeTool(i);return;}
+    if((m.tools||[])[i]===val)return;
+    m.tools[i]=val;
+    markDirty();
+}
+
+// — Swap tools par clic —
+let _toolSelected=null;
+
+function selectTool(e,i){
+    e.stopPropagation();
+    if(_toolSelected===null){
+        _toolSelected=i;
+        const b=document.getElementById('tool-badge-'+i);
+        if(b){b.style.outline='2px solid #cfa848';b.style.outlineOffset='2px';b.title='Cliquer un autre outil pour échanger';}
+    }else if(_toolSelected===i){
+        _clearToolSelection();
+    }else{
+        const m=getModule(currentId);if(!m?.tools)return;
+        pushUndo();
+        [m.tools[_toolSelected],m.tools[i]]=[m.tools[i],m.tools[_toolSelected]];
+        _toolSelected=null;
+        renderModuleDetail();markDirty();
+    }
+}
+
+function _clearToolSelection(){
+    if(_toolSelected!==null){
+        const b=document.getElementById('tool-badge-'+_toolSelected);
+        if(b){b.style.outline='';b.style.outlineOffset='';}
+    }
+    _toolSelected=null;
+}
+
+document.addEventListener('click',function(e){
+    if(_toolSelected!==null&&!e.target.closest('[id^="tool-badge-"]'))_clearToolSelection();
+});
+
+// — Input ajout outil —
+let _toolCommitting=false;
+
+function showToolInput(){
+    const inp=document.getElementById('toolInput');if(!inp)return;
+    // Peupler les suggestions depuis tous les modules
+    const dl=document.getElementById('toolSuggestions');
+    if(dl){
+        const m=getModule(currentId);
+        const current=new Set((m?.tools||[]).map(t=>t.toLowerCase()));
+        const all=[...new Set(modules.flatMap(mod=>mod.tools||[]))]
+            .filter(t=>!current.has(t.toLowerCase()))
+            .sort((a,b)=>a.localeCompare(b));
+        dl.innerHTML=all.map(t=>`<option value="${escAttr(t)}"></option>`).join('');
+    }
+    inp.style.display='inline-block';inp.value='';inp.focus();
+    document.getElementById('addToolBtn').style.display='none';
+}
+
+function commitTool(inp){
+    if(_toolCommitting)return;
+    _toolCommitting=true;
+    const v=inp.value.trim();
+    inp.value='';
+    inp.style.display='none';
+    const b=document.getElementById('addToolBtn');if(b)b.style.display='';
+    _toolCommitting=false;
+    if(!v||!currentId)return;
+    const m=getModule(currentId);
+    // Évite les doublons exacts
+    if((m.tools||[]).some(t=>t.toLowerCase()===v.toLowerCase()))return;
+    pushUndo();
+    (m.tools=m.tools||[]).push(v);
+    renderModuleDetail();markDirty();
+}
+
+function handleToolKey(e,inp){
+    if(e.key==='Enter'){e.preventDefault();commitTool(inp);}
+    if(e.key==='Escape'){inp.value='';inp.style.display='none';const b=document.getElementById('addToolBtn');if(b)b.style.display='';}
+}
 
 // ════ SCHEDULE ════════════════════════════════════════════════════════════════
-function addDay(){const m=getModule(currentId);if(!m)return;m.schedule=m.schedule||[];const n=m.schedule.length>0?Math.max(...m.schedule.map(d=>d.day))+1:1;m.schedule.push({day:n,title:'Nouveau jour',tasks:[]});renderModuleDetail();markDirty();}
-function removeDay(di){const m=getModule(currentId);if(!m)return;m.schedule.splice(di,1);renderModuleDetail();markDirty();}
-function addTask(di){const m=getModule(currentId);if(!m)return;(m.schedule[di].tasks=m.schedule[di].tasks||[]).push('Nouvelle tâche');renderModuleDetail();markDirty();}
-function removeTask(di,ti){const m=getModule(currentId);if(!m)return;m.schedule[di].tasks.splice(ti,1);renderModuleDetail();markDirty();}
+function addDay(){const m=getModule(currentId);if(!m)return;pushUndo();m.schedule=m.schedule||[];const n=m.schedule.length>0?Math.max(...m.schedule.map(d=>d.day))+1:1;m.schedule.push({day:n,title:'Nouveau jour',tasks:[]});renderModuleDetail();markDirty();}
+function removeDay(di){const m=getModule(currentId);if(!m)return;pushUndo();m.schedule.splice(di,1);renderModuleDetail();markDirty();}
+function addTask(di){const m=getModule(currentId);if(!m)return;pushUndo();(m.schedule[di].tasks=m.schedule[di].tasks||[]).push('Nouvelle tâche');renderModuleDetail();markDirty();}
+function removeTask(di,ti){const m=getModule(currentId);if(!m)return;pushUndo();m.schedule[di].tasks.splice(ti,1);renderModuleDetail();markDirty();}
 
 // ════ EXTRA BLOCKS ════════════════════════════════════════════════════════════
-function addExtraBlock(){const m=getModule(currentId);if(!m)return;(m.extraBlocks=m.extraBlocks||[]).push({title:'Nouveau bloc',body:''});renderModuleDetail();markDirty();}
-function removeExtraBlock(bi){const m=getModule(currentId);if(!m)return;m.extraBlocks.splice(bi,1);// also clean colors/heights for this block
+function addExtraBlock(){const m=getModule(currentId);if(!m)return;pushUndo();(m.extraBlocks=m.extraBlocks||[]).push({title:'Nouveau bloc',body:''});renderModuleDetail();markDirty();}
+function removeExtraBlock(bi){const m=getModule(currentId);if(!m)return;pushUndo();m.extraBlocks.splice(bi,1);// also clean colors/heights for this block
 Object.keys(m.colors||{}).filter(k=>k.startsWith('extra')&&k.includes(bi)).forEach(k=>delete m.colors[k]);
 Object.keys(m.heights||{}).filter(k=>k.includes('extraCard'+bi)).forEach(k=>delete m.heights[k]);
 renderModuleDetail();markDirty();}
 
 // ════ RENDUS ══════════════════════════════════════════════════════════════════
-function removeRendu(i){const m=getModule(currentId);if(!m)return;m.rendus.splice(i,1);renderModuleDetail();markDirty();}
+function removeRendu(i){const m=getModule(currentId);if(!m)return;pushUndo();m.rendus.splice(i,1);_renduSelected=null;renderModuleDetail();markDirty();}
+
+let _renduSelected = null; // index de la carte sélectionnée pour l'échange
+
+function selectRendu(e, i) {
+    e.stopPropagation();
+    if (_renduSelected === null) {
+        // Premier clic : sélectionner
+        _renduSelected = i;
+        const card = document.getElementById('rendu-card-' + i);
+        if (card) {
+            card.style.outline = '3px solid #cfa848';
+            card.style.outlineOffset = '2px';
+            card.style.transform = 'scale(1.03)';
+            // Indicateur visuel central
+            const hint = document.createElement('div');
+            hint.id = 'rendu-hint';
+            hint.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(207,168,72,0.18);pointer-events:none;z-index:5;';
+            hint.innerHTML = '<span style="background:#cfa848;color:#4a3426;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:800;">Cliquer une autre image</span>';
+            card.appendChild(hint);
+        }
+    } else if (_renduSelected === i) {
+        // Deuxième clic sur la même : désélectionner
+        _clearRenduSelection();
+    } else {
+        // Deuxième clic sur une autre : échanger
+        const m = getModule(currentId); if (!m?.rendus) return;
+        pushUndo();
+        [m.rendus[_renduSelected], m.rendus[i]] = [m.rendus[i], m.rendus[_renduSelected]];
+        _renduSelected = null;
+        renderModuleDetail();
+        markDirty();
+    }
+}
+
+function _clearRenduSelection() {
+    if (_renduSelected !== null) {
+        const card = document.getElementById('rendu-card-' + _renduSelected);
+        if (card) { card.style.outline = ''; card.style.outlineOffset = ''; card.style.transform = ''; }
+        const hint = document.getElementById('rendu-hint');
+        if (hint) hint.remove();
+    }
+    _renduSelected = null;
+}
+
+// Cliquer ailleurs annule la sélection
+document.addEventListener('click', function(e) {
+    if (_renduSelected !== null && !e.target.closest('[id^="rendu-card-"]')) _clearRenduSelection();
+});
 async function handleUpload(input){
     const m=getModule(currentId);if(!m)return;m.rendus=m.rendus||[];
     const files=Array.from(input.files);if(!files.length)return;
@@ -591,6 +880,19 @@ async function handleUpload(input){
         try{const res=await fetch('/api/upload',{method:'POST',body:fd});const d=await res.json();if(d.ok)m.rendus.push({student:file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' '),image:d.path});}catch(e){console.error(e);}
     }
     renderModuleDetail();markDirty();input.value='';
+}
+
+// ════ MODULE REORDER ════════════════════════════════════════════════════════
+function moveModule(id,dir){
+    const idx=modules.findIndex(m=>m.id===id);
+    const ni=idx+dir;
+    if(ni<0||ni>=modules.length)return;
+    [modules[idx],modules[ni]]=[modules[ni],modules[idx]];
+    // Renumber weeks sequentially based on new position
+    modules.forEach((m,i)=>m.week=i+1);
+    renderModuleList();
+    renderModuleDetail();
+    markDirty();
 }
 
 // ════ ADD / DELETE MODULE ═════════════════════════════════════════════════════
@@ -612,7 +914,7 @@ function deleteCurrentModule(){
     else document.getElementById('module-detail').innerHTML='<div class="flex items-center justify-center h-64 text-[#4a3426]/30 text-sm">Aucun module.</div>';
 }
 
-// ════ SAVE ════════════════════════════════════════════════════════════════════
+// ════ SAVE & PUBLISH ══════════════════════════════════════════════════════════
 async function saveAll(){
     setStatus('saving','Sauvegarde…');
     try{
@@ -620,6 +922,24 @@ async function saveAll(){
         const d=await res.json();
         if(d.ok){dirty=false;setStatus('saved','Sauvegardé ✓');}else setStatus('error',d.error||'Erreur');
     }catch(e){setStatus('error','Erreur réseau');console.error(e);}
+}
+async function publishAndView(){
+    if(dirty) await saveAll();
+    setStatus('saving','Publication GitHub…');
+    try{
+        const res=await fetch('/api/publish',{method:'POST'});
+        const d=await res.json();
+        if(d.ok){
+            setStatus('saved','Publié ✓');
+            window.open('https://lgodineaupro-cmd.github.io/Programme-Cours-3D/','_blank');
+        } else {
+            setStatus('error','Git: '+(d.error||'erreur'));
+            if(confirm('Erreur git: '+(d.error||'?')+'\n\nOuvrir quand même la preview locale ?'))window.open('index.html','_blank');
+        }
+    }catch(e){
+        setStatus('error','Erreur réseau');
+        window.open('index.html','_blank');
+    }
 }
 
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});

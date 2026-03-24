@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import socketserver
+import subprocess
 import urllib.parse
 from pathlib import Path
 
@@ -270,7 +271,7 @@ class EditorHandler(http.server.BaseHTTPRequestHandler):
                 self._send_error(str(e))
 
         elif path.startswith('/images/'):
-            rel = path[1:]  # strip leading /
+            rel = urllib.parse.unquote(path[1:])  # strip leading / and decode %20, %C3%A9, etc.
             # Prevent path traversal
             full = (BASE_DIR / rel).resolve()
             try:
@@ -291,12 +292,42 @@ class EditorHandler(http.server.BaseHTTPRequestHandler):
             self._handle_save_modules()
         elif path == '/api/upload':
             self._handle_upload()
+        elif path == '/api/publish':
+            self._handle_publish()
         else:
             self._send_error('Not found', 404)
 
     # ------------------------------------------------------------------
     # Handlers
     # ------------------------------------------------------------------
+
+    def _handle_publish(self):
+        """git add index.html + commit + push, then return ok."""
+        try:
+            def run_git(*args):
+                return subprocess.run(
+                    ['git'] + list(args),
+                    cwd=str(BASE_DIR),
+                    capture_output=True, text=True, timeout=60
+                )
+            r = run_git('add', 'index.html')
+            if r.returncode != 0:
+                self._send_json({'ok': False, 'error': (r.stderr or r.stdout or 'git add failed').strip()})
+                return
+            r = run_git('commit', '-m', 'Syllabus update')
+            # exit 1 = nothing to commit — not a real error
+            if r.returncode not in (0, 1):
+                self._send_json({'ok': False, 'error': (r.stderr or r.stdout or 'git commit failed').strip()})
+                return
+            r = run_git('push')
+            if r.returncode != 0:
+                self._send_json({'ok': False, 'error': (r.stderr or r.stdout or 'git push failed').strip()})
+                return
+            self._send_json({'ok': True})
+        except subprocess.TimeoutExpired:
+            self._send_json({'ok': False, 'error': 'git timeout (>60s)'})
+        except Exception as e:
+            self._send_json({'ok': False, 'error': str(e)})
 
     def _handle_save_modules(self):
         try:
