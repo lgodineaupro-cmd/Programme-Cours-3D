@@ -109,17 +109,25 @@
         <img id="lightboxImage" src="" alt="Rendu étudiant" class="max-w-[95vw] max-h-[95vh] object-contain rounded-lg shadow-2xl" onclick="event.stopPropagation()">
     </div>
 
-    <!-- Gallery Modal (all rendus) -->
-    <div id="galleryModal" class="fixed inset-0 z-40 bg-[#3a2418]/98 backdrop-blur-sm" style="display:none;">
-        <div class="flex flex-col h-screen">
-            <div class="flex items-center justify-between px-6 py-4 bg-[#2a1810] border-b-2 border-[#cfa848]/40 shrink-0">
-                <h2 id="galleryTitle" class="text-2xl font-black text-[#f8f1e0]">Rendu Étudiants</h2>
-                <button onclick="closeGallery()" class="p-2.5 bg-[#cfa848] hover:bg-[#b8922e] rounded-lg transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
+    <!-- Gallery Modal (all rendus) — cliquer sur le fond sombre ferme la galerie -->
+    <div id="galleryModal" onclick="closeGallery()" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(58,36,24,0.97); overflow-y:auto; cursor:pointer;">
+        <!-- Contenu — stopPropagation pour ne pas fermer en cliquant sur les images/header -->
+        <div onclick="event.stopPropagation()" style="cursor:default;">
+            <!-- En-tête fixe -->
+            <div style="position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:16px 24px; background:#2a1810; border-bottom:2px solid rgba(207,168,72,0.4);">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <button onclick="closeGallery()" style="display:flex; align-items:center; gap:8px; padding:10px 18px; background:#cfa848; border:none; border-radius:10px; cursor:pointer; font-weight:800; font-size:16px; color:#4a3426;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                        Retour
+                    </button>
+                    <span style="font-size:13px; color:rgba(248,241,224,0.35);">ou cliquer en dehors</span>
+                </div>
+                <h2 id="galleryTitle" style="font-size:1.4rem; font-weight:900; color:#f8f1e0; margin:0;">Rendu Étudiants</h2>
+                <button onclick="closeGallery()" style="padding:10px 14px; background:rgba(207,168,72,0.2); border:2px solid #cfa848; border-radius:10px; cursor:pointer; color:#cfa848; font-size:22px; font-weight:bold; line-height:1;">&times;</button>
             </div>
-            <div class="overflow-y-auto flex-1 p-8">
-                <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+            <!-- Grille -->
+            <div style="padding:40px 20px;">
+                <div id="galleryGrid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; max-width:1200px; margin:0 auto;">
                     <!-- populated by JS -->
                 </div>
             </div>
@@ -239,7 +247,7 @@ const COURSE_DATA = [
     "title": "Box modeling « Fortiche »",
     "description": "Introduction au hardsurface stylisé avec une topologie propre.",
     "category": "modeling",
-    "objective": "Créer un asset hardsurface stylisé détaillé (weapons, batiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé.",
+    "objective": "Créer un asset hardsurface stylisé détaillé (weapons, bâtiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé à la manière des studios d'animation.",
     "tools": [
       "Maya",
       "Blender"
@@ -298,13 +306,16 @@ const COURSE_DATA = [
       },
       {
         "student": "Luc Reynal",
-        "image": "images/Box_modelling/luc-reynal-pasteque.jpg"
+        "image": "images/Box_modelling/luc-reynal.jpg"
       },
       {
         "student": "Sarah Larrieu",
         "image": "images/Box_modelling/sarah-larrieu-manan.jpg"
       }
-    ]
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 2,
@@ -314,12 +325,16 @@ const COURSE_DATA = [
     "category": "texturing",
     "objective": "Texturer en PBR l'asset hardsurface du Module 1 dans Substance 3D Painter, et produire des renders « portfolio ready ».",
     "tools": [
-      "Substance 3D Painter",
-      "Marmoset"
+      "Marmoset",
+      "Unreal",
+      "Arnold",
+      "Unreal",
+      "Substance 3D Painter"
     ],
     "deliverables": [
       "1 asset entièrement texturé (PBR metal/rough)",
-      "Pack de textures exportées (prêt pour moteur/rendu)"
+      "Pack de textures exportées (prêt pour moteur/rendu)",
+      "une image de rendu en 1920/1080 permettant de mettre en valeur vos textures"
     ],
     "schedule": [
       {
@@ -364,7 +379,45 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [
+      {
+        "student": "Eva berguey modellisation maya texturing substance",
+        "image": "images/rendus/module_2/Eva_berguey_modellisation_maya_texturing_substance_1774307200.jpg"
+      },
+      {
+        "student": "jeanne molierac delbreil m1c molierac jeanne realistic texturing01",
+        "image": "images/rendus/module_2/jeanne-molierac-delbreil-m1c-molierac-jeanne-realistic-texturing01_1774307200.jpg"
+      },
+      {
+        "student": "matis lorge",
+        "image": "images/rendus/module_2/matis_lorge_1774307200.jpg"
+      },
+      {
+        "student": "maxence groyer render principal r32 1 finish",
+        "image": "images/rendus/module_2/maxence-groyer-render-principal-r32-1-finish_1774307200.jpg"
+      },
+      {
+        "student": "quentin schlicht m1c s1 schlicht quentin lighting asset",
+        "image": "images/rendus/module_2/quentin-schlicht-m1c-s1-schlicht-quentin-lighting-asset_1774307200.jpg"
+      },
+      {
+        "student": "sarah larrieu manan retouches central cam 3 min",
+        "image": "images/rendus/module_2/sarah-larrieu-manan-retouches-central-cam-3-min_1774307200.jpg"
+      },
+      {
+        "student": "charlotte besnard",
+        "image": "images/rendus/module_2/charlotte-besnard-neutre.jpg"
+      },
+      {
+        "student": "hugo pomme2",
+        "image": "images/rendus/module_2/hugo-pomme2.jpg"
+      }
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {
+      "deliverablesCard": ""
+    }
   },
   {
     "id": 3,
@@ -378,8 +431,8 @@ const COURSE_DATA = [
       "Blender"
     ],
     "deliverables": [
-      "Une fiche perso d'équivalences (Maya → Blender)",
-      "Asset simple modélisé dans le nouveau soft"
+      "Asset simple modélisé dans le nouveau soft",
+      "Une image de rendu dans eevee en grayscale"
     ],
     "schedule": [
       {
@@ -421,7 +474,10 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 4,
@@ -481,7 +537,35 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [
+      {
+        "student": "handpaint",
+        "image": "images/rendus/module_4/handpaint.jpg"
+      },
+      {
+        "student": "Lucy Papet Game ready asset",
+        "image": "images/rendus/module_4/Lucy_Papet_Game_ready_asset.jpg"
+      },
+      {
+        "student": "nikolas salon shot1",
+        "image": "images/rendus/module_4/nikolas-salon-shot1.jpg"
+      },
+      {
+        "student": "nikolas salon shot 4 1",
+        "image": "images/rendus/module_4/nikolas-salon-shot-4-1.jpg"
+      },
+      {
+        "student": "thibault de vaissiere vignette",
+        "image": "images/rendus/module_4/thibault-de-vaissiere-vignette.jpg"
+      },
+      {
+        "student": "ambre de casanove",
+        "image": "images/rendus/module_4/ambre-de-casanove.jpg"
+      }
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 5,
@@ -489,7 +573,7 @@ const COURSE_DATA = [
     "title": "Lookdev ZBrush → Substance → Marmoset",
     "description": "Concept 3D et rendu de qualité portfolio.",
     "category": "specialized",
-    "objective": "Produire un concept 3D/lookdev complet à partir d'un sculpt stylisé.",
+    "objective": "Ici L'étudiant ne doit se préoccuper que de l'image finale et produire dans un temps très limité une image de concept /look dev 3D donnant une idée du style finale de son film.",
     "tools": [
       "ZBrush",
       "Substance",
@@ -541,7 +625,23 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [
+      {
+        "student": "Quentin Schlicht",
+        "image": "images/rendus/module_5/quentin_schicht.png"
+      },
+      {
+        "student": "Raphael Jourdain",
+        "image": "images/rendus/module_5/raphael-jourdain-01.jpg"
+      },
+      {
+        "student": "matis lorge",
+        "image": "images/rendus/module_5/matis-lorge-3.png"
+      }
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 6,
@@ -599,7 +699,23 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [
+      {
+        "student": "alix vandermeersch",
+        "image": "images/rendus/module_6/alix-vandermeersch.jpg"
+      },
+      {
+        "student": "ambre de casanove",
+        "image": "images/rendus/module_6/ambre_de_casanove.jpg"
+      },
+      {
+        "student": "raphael alves",
+        "image": "images/rendus/module_6/raphael-alves.jpg"
+      }
+    ],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 7,
@@ -610,8 +726,9 @@ const COURSE_DATA = [
     "objective": "Apprendre à récupérer un scan 3D « sale » et en faire un mesh clean, projeté, texturable.",
     "tools": [
       "ZBrush",
-      "Blender",
-      "Substance"
+      "Maya",
+      "Substance Painter",
+      "Substance Designer"
     ],
     "deliverables": [
       "Mesh propre (topo compatible prod)",
@@ -658,61 +775,10 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
-  },
-  {
-    "id": 8,
-    "week": 8,
-    "title": "Anatomy",
-    "description": "Sculpt anatomique : Squelette et masses musculaires.",
-    "category": "modeling",
-    "objective": "À partir d'un basemesh, sculpter squelette simplifié + masses musculaires principales.",
-    "tools": [
-      "ZBrush"
-    ],
-    "deliverables": [
-      "1 modèle anatomique (pose neutre) montrant squelette/masses musculaires"
-    ],
-    "schedule": [
-      {
-        "day": 1,
-        "title": "Proportions & Squelette",
-        "tasks": [
-          "Rappel proportions, landmarks osseux, pose neutre",
-          "Squelette grossier sur basemesh"
-        ]
-      },
-      {
-        "day": 2,
-        "title": "Torse",
-        "tasks": [
-          "Torse + bassin, cage thoracique, pelvis"
-        ]
-      },
-      {
-        "day": 3,
-        "title": "Membres Inférieurs",
-        "tasks": [
-          "Jambes + pieds, masses principales"
-        ]
-      },
-      {
-        "day": 4,
-        "title": "Membres Supérieurs",
-        "tasks": [
-          "Bras + mains, insertion des muscles principaux"
-        ]
-      },
-      {
-        "day": 5,
-        "title": "Tête & Cou",
-        "tasks": [
-          "Tête + cou, rythmes principaux",
-          "Rendu clay ZBrush pour portfolio d'étude"
-        ]
-      }
-    ],
-    "rendus": []
+    "rendus": [],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 9,
@@ -767,7 +833,10 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   },
   {
     "id": 10,
@@ -828,7 +897,31 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": []
+    "rendus": [],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
+  },
+  {
+    "id": 11,
+    "week": 11,
+    "title": "Handpaint",
+    "category": "modeling",
+    "description": "",
+    "objective": "",
+    "tools": [
+      "substance painter",
+      "blender/maya",
+      "zbrush",
+      "substance designer",
+      "substance designer"
+    ],
+    "deliverables": [],
+    "schedule": [],
+    "rendus": [],
+    "extraBlocks": [],
+    "colors": {},
+    "heights": {}
   }
 ];
 
@@ -926,11 +1019,11 @@ function renderModuleDetail() {
                 <span style="${(m.colors&&m.colors['task'+di+'_'+ti])?'color:'+m.colors['task'+di+'_'+ti]:'' }">${t}</span>
             </li>`).join('');
         return `
-        <div class="group bg-[#fdf7ec] border border-[#eaddcf] rounded-xl overflow-hidden hover:border-[#cfa848] transition-colors shadow-sm">
+        <div class="group bg-[#fdf7ec] border border-[#eaddcf] rounded-xl overflow-hidden hover:border-[#cfa848] transition-colors shadow-sm" style="${(m.colors&&m.colors['dayBg'+di])?'background:'+m.colors['dayBg'+di]:'' }">
             <div class="p-4 flex flex-col md:flex-row md:items-center gap-4">
-                <div class="flex-shrink-0 w-16 h-16 bg-white rounded-lg flex flex-col items-center justify-center border border-[#eaddcf] group-hover:border-[#cfa848] transition-colors shadow-sm">
-                    <span class="text-xs text-[#4a3426]/40 uppercase font-bold">Jour</span>
-                    <span class="text-2xl font-bold text-[#4a3426]">${day.day}</span>
+                <div class="flex-shrink-0 w-16 h-16 rounded-lg flex flex-col items-center justify-center border border-[#eaddcf] group-hover:border-[#cfa848] transition-colors shadow-sm" style="background:${(m.colors&&m.colors['dayIconBg'+di])||'#ffffff'};color:${(m.colors&&m.colors['dayNum'+di])||'#4a3426'}">
+                    <span class="text-xs uppercase font-bold opacity-50">Jour</span>
+                    <span class="text-2xl font-bold">${day.day}</span>
                 </div>
                 <div class="flex-grow">
                     <h3 class="font-bold text-[#4a3426] mb-2 border-l-2 border-[#cfa848] pl-2" style="${(m.colors&&m.colors['dayTitle'+di])?'color:'+m.colors['dayTitle'+di]:'' }">${day.title}</h3>
@@ -1092,28 +1185,59 @@ orgModal.addEventListener('click', (e) => {
     }
 });
 
-// Gallery functions
+// ═══ GALERIE ═══════════════════════════════════════════════════════════════
 function openGallery(moduleId) {
     const m = COURSE_DATA.find(mod => mod.id === moduleId);
     if (!m || !m.rendus) return;
     const grid = document.getElementById('galleryGrid');
     document.getElementById('galleryTitle').textContent = 'Rendu Étudiants — ' + m.title;
-    grid.innerHTML = m.rendus.map(r => `
-        <div class="cursor-pointer group" onclick="openLightbox('${r.image.replace(/'/g, "\\'")}')"> 
-            <div class="aspect-square overflow-hidden rounded-xl border border-[#cfa848]/20 bg-[#eaddcf]">
-                <img src="${r.image}" alt="${r.student}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+    grid.innerHTML = m.rendus.map(r => {
+        const safe = r.image.replace(/'/g, "\\'");
+        return `<div onclick="openLightbox('${safe}')" style="width:200px;cursor:pointer;flex:0 0 200px;">
+            <div style="width:200px;height:200px;overflow:hidden;border-radius:12px;border:1px solid rgba(207,168,72,0.3);background:#eaddcf;">
+                <img src="${r.image}" alt="${r.student}" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.07)'" onmouseout="this.style.transform='scale(1)'">
             </div>
-            <p class="mt-2 text-center text-sm text-[#f8f1e0]/80 font-medium truncate px-1">${r.student}</p>
-        </div>
-    `).join('');
-    document.getElementById('galleryModal').style.display = 'flex';
+            <p style="margin-top:8px;text-align:center;font-size:13px;color:rgba(248,241,224,0.8);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.student}</p>
+        </div>`;
+    }).join('');
+    document.getElementById('galleryModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
+    // Utilise le hash URL — fonctionne sur http:// ET file://
+    window.location.hash = 'gallery';
 }
 
 function closeGallery() {
     document.getElementById('galleryModal').style.display = 'none';
     document.body.style.overflow = '';
+    // Retire le hash sans recharger la page
+    if (window.location.hash === '#gallery') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
 }
+
+// Bouton retour navigateur : ferme la galerie
+window.addEventListener('hashchange', function() {
+    if (window.location.hash !== '#gallery') {
+        const modal = document.getElementById('galleryModal');
+        if (modal && modal.style.display !== 'none') {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    }
+});
+
+// Touche Échap
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    const lightbox = document.getElementById('lightboxModal');
+    if (lightbox && !lightbox.classList.contains('hidden')) {
+        lightbox.classList.add('hidden');
+        document.body.style.overflow = '';
+        return;
+    }
+    const gallery = document.getElementById('galleryModal');
+    if (gallery && gallery.style.display !== 'none') closeGallery();
+});
 
 // Lightbox functions
 function openLightbox(imageSrc) {
