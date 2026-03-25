@@ -179,7 +179,8 @@ const SITE_SETTINGS = {
       "summaryTitle": "📚 Format Quotidien = 3h d’encadrement",
       "summaryText": "3h de cours live  + support continu"
     }
-  ]
+  ],
+  "labelRendus": "Rendus Étudiants"
 };
 const COURSE_DATA = [
   {
@@ -188,16 +189,15 @@ const COURSE_DATA = [
     "title": "Box modeling « Fortiche »",
     "description": "Introduction au hardsurface stylisé avec une topologie propre.",
     "category": "Modelling / Texturing",
-    "objective": "Créer un asset hardsurface stylisé détaillé (weapons, bâtiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé à la manière des studios d'animation avec un pipe box modelling (fortiche, Mikros illumination)",
+    "objective": "Créer un asset hardsurface stylisé et détaillé (armes, bâtiments, artefacts, environnement), avec une topologie propre et optimisée, prêt pour un texturing PBR stylisé, dans l’esprit des studios d’animation, en suivant un workflow de box modeling (Fortiche, Mikros Animation).",
     "tools": [
-      "Maya",
-      "Blender",
-      "Substance 3D Painter"
+      "Substance 3D Painter",
+      "blender / maya"
     ],
     "deliverables": [
       "1 asset low poly propre (quad-based, bonnes loops)",
       "UVs dépliés proprement",
-      "Export FBX/OBJ avec smoothing groups corrects"
+      "Export FBX/OBJ dans les groupes adequats"
     ],
     "schedule": [
       {
@@ -210,7 +210,7 @@ const COURSE_DATA = [
       },
       {
         "day": 2,
-        "title": "Blocking & Bevels",
+        "title": "Blocking",
         "tasks": [
           "Blocking asset (formes simples + proportions)",
           "Focus sur la gestion des bevels / support loops pour les edges durs"
@@ -221,23 +221,23 @@ const COURSE_DATA = [
         "title": "Détails & Topologie",
         "tasks": [
           "Détails secondaires, gestion de la densité de topo",
-          "Naming, hiérarchie, préparation pour UV"
+          "gestion de la densité de topo"
         ]
       },
       {
         "day": 4,
-        "title": "UVs & Vérification",
+        "title": "Détails & Topologie",
         "tasks": [
-          "UVs (cuts logiques, texel density, UDIM si nécessaire)",
-          "Debut Texturing sylisé"
+          "Derniers détails affinage du mesh.",
+          "Préparation clean de l'asset."
         ]
       },
       {
         "day": 5,
-        "title": "Finalisation",
+        "title": "UVs & Vérification",
         "tasks": [
-          "Texturing stylisé substance Painter",
-          "Finalisation Rendu"
+          "UVs (cuts logiques, texel density, UDIM si nécessaire)",
+          "Importation dans substance"
         ]
       }
     ],
@@ -248,10 +248,6 @@ const COURSE_DATA = [
         "zoom": 1,
         "panX": 0,
         "panY": 0
-      },
-      {
-        "student": "sarah larrieu manan",
-        "image": "images/rendus/module_1/sarah-larrieu-manan.jpg"
       },
       {
         "student": "Emma Piot",
@@ -293,7 +289,8 @@ const COURSE_DATA = [
     "heights": {
       "objectiveCard": "351px"
     },
-    "weekLabel": "Semaine"
+    "weekLabel": "Semaine",
+    "classLabel": "Animation"
   },
   {
     "id": 2,
@@ -320,16 +317,15 @@ const COURSE_DATA = [
         "title": "Setup Projet & Blocking",
         "tasks": [
           " import asset, setup projet, UI tour, check UV",
-          "Soir 1h: Blocking de texture (fill layers, roughness/metalness), filtres designer"
+          "Baking avancé (normal, AO, curvature), correction artefacts"
         ]
       },
       {
         "day": 2,
         "title": "Baking & Matériaux",
         "tasks": [
-          " Baking avancé (normal, AO, curvature), correction artefacts",
-          "Création matériaux principaux, smart materials, masques ID/UV",
-          "Soir 1h: Finir bake propre et screenshots maps"
+          "Mise en place des premiers applats",
+          "Création matériaux principaux, smart materials, masques ID/UV"
         ]
       },
       {
@@ -337,7 +333,7 @@ const COURSE_DATA = [
         "title": "Layers Secondaires",
         "tasks": [
           " Ajouts de détails et layers secondaires",
-          "Soir 1h: Poser tous les matériaux de base (WIP)"
+          "Polish de la roughness/ metalness"
         ]
       },
       {
@@ -345,41 +341,41 @@ const COURSE_DATA = [
         "title": "Usure & Détails",
         "tasks": [
           " Generators (edge wear, dirt), peinture manuelle, petits détails (logos)",
-          "Soir 1h: Finaliser grunge/usure, captures avant/après"
+          "export des maps premier test de lighting dans la scene de lookdev donnée."
         ]
       },
       {
         "day": 5,
         "title": "Export & Renders",
         "tasks": [
-          " Export textures, lighting viewport, rendu Marmoset (2-3 angles)",
-          "Soir 1h: Dépôt pack textures + renders finaux"
+          "rendu Marmoset / unreal / arnold (2-3 angles)"
         ]
       }
     ],
     "rendus": [
       {
-        "student": "Eva berguey modellisation maya texturing substance",
+        "student": "Eva berguey",
         "image": "images/rendus/module_2/Eva_berguey_modellisation_maya_texturing_substance_1774307200.jpg"
       },
       {
-        "student": "jeanne molierac delbreil m1c molierac jeanne realistic texturing01",
+        "student": "jeanne molierac",
         "image": "images/rendus/module_2/jeanne-molierac-delbreil-m1c-molierac-jeanne-realistic-texturing01_1774307200.jpg"
       },
       {
         "student": "matis lorge",
-        "image": "images/rendus/module_2/matis_lorge_1774307200.jpg"
+        "image": "images/rendus/module_2/matis_lorge_1774307200.jpg",
+        "zoom": 1
       },
       {
-        "student": "maxence groyer render principal r32 1 finish",
+        "student": "maxence groyer",
         "image": "images/rendus/module_2/maxence-groyer-render-principal-r32-1-finish_1774307200.jpg"
       },
       {
-        "student": "quentin schlicht m1c s1 schlicht quentin lighting asset",
+        "student": "quentin schlicht",
         "image": "images/rendus/module_2/quentin-schlicht-m1c-s1-schlicht-quentin-lighting-asset_1774307200.jpg"
       },
       {
-        "student": "sarah larrieu manan retouches central cam 3 min",
+        "student": "sarah larrieu manan",
         "image": "images/rendus/module_2/sarah-larrieu-manan-retouches-central-cam-3-min_1774307200.jpg",
         "zoom": 1
       },
@@ -388,7 +384,7 @@ const COURSE_DATA = [
         "image": "images/rendus/module_2/charlotte-besnard-neutre.jpg"
       },
       {
-        "student": "hugo pomme2",
+        "student": "hugo aboab",
         "image": "images/rendus/module_2/hugo-pomme2.jpg"
       }
     ],
@@ -396,7 +392,8 @@ const COURSE_DATA = [
     "colors": {},
     "heights": {
       "deliverablesCard": ""
-    }
+    },
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 3,
@@ -404,7 +401,7 @@ const COURSE_DATA = [
     "title": "Passage Maya ↔ Blender",
     "description": "Transition fluide entre les deux standards de l'industrie. Blender prenant de plus en plus de place dans l'industrie il est important que les étudiants aient des notions sur le soft.",
     "category": "modeling",
-    "objective": "Rendre les étudiants à l'aise pour passer de Maya à Blender en modélisant un asset simple.",
+    "objective": "Rendre les étudiants à l'aise pour passer de Maya à Blender en modélisant un asset simple et en le rendant avec eevee.",
     "tools": [
       "Maya",
       "Blender"
@@ -475,30 +472,32 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 4,
     "week": 4,
     "title": "Workflow JV Complet",
-    "description": "Pipeline complet : Maya → ZBrush → Blender → Substance.",
-    "category": "workflow",
-    "objective": "Pipeline complet Game Asset : blocking Maya → High poly ZBrush → Low poly + UV Blender → bake + texturing Substance.",
+    "description": "Pipeline complet : Low def→ highdef → Bake → Render.",
+    "category": "Modelling/ Texturing/ lookdev",
+    "objective": "A partir d'un low def , détailler notre mesh pour en faire un high def et venir baker tous ses détails avant de le rendre texturer dans marmoset ou Unreal.",
     "tools": [
-      "Maya",
+      "blender / maya",
       "ZBrush",
-      "Blender",
-      "Substance"
+      "substance designer",
+      "Substance 3D Painter"
     ],
     "deliverables": [
-      "1 asset « game ready » (LOD unique) avec maps PBR propres"
+      "1 asset « game ready » (LOD unique) avec maps PBR propres",
+      "4 images de rendus sous 4 angles différents de notre mesh."
     ],
     "schedule": [
       {
         "day": 1,
         "title": "Blocking & Contraintes",
         "tasks": [
-          "Blocking dans Maya (formes, proportions, pas de détails)",
+          "Blocking dans Maya ou blender (formes, proportions, pas de détails)",
           "Explication contraintes game (budgets poly, silhouette, bakes)"
         ]
       },
@@ -506,7 +505,7 @@ const COURSE_DATA = [
         "day": 2,
         "title": "ZBrush High Poly",
         "tasks": [
-          "Passage dans ZBrush, dynamesh, high poly (edges durs)",
+          "Passage dans ZBrush ou blender pour le highdef, dynamesh, high poly (edges durs)",
           "Gestion subdivisions, polygroups"
         ]
       },
@@ -523,15 +522,15 @@ const COURSE_DATA = [
         "title": "Baking & Cleanup",
         "tasks": [
           "Bake dans Substance, gestion des cages",
-          "Nettoyage des artefacts"
+          "Nettoyage des artefacts + texturing"
         ]
       },
       {
         "day": 5,
         "title": "Texturing & Export",
         "tasks": [
-          "Texturing rapide mais propre (PBR metal/rough)",
-          "Rendu simple (Iray ou viewer) + export textures"
+          "Finalisation texturing (PBR metal/rough)",
+          "Rendu simple dans la scène de lookdev donnée"
         ]
       }
     ],
@@ -572,7 +571,8 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "JV"
   },
   {
     "id": 5,
@@ -584,7 +584,8 @@ const COURSE_DATA = [
     "tools": [
       "ZBrush",
       "Substance",
-      "Marmoset"
+      "Marmoset",
+      "blender/maya"
     ],
     "deliverables": [
       "High poly ZBrush",
@@ -620,7 +621,8 @@ const COURSE_DATA = [
         "day": 4,
         "title": "Setup Marmoset",
         "tasks": [
-          "Lights, HDRI, shaders PBR, caméras"
+          "Lights, HDRI, shaders PBR, caméras",
+          "Export des passes"
         ]
       },
       {
@@ -650,18 +652,20 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 6,
     "week": 6,
     "title": "Pipe Cloth Marvelous → ZBrush",
-    "description": "Création de vêtements réalistes ou stylisés.",
+    "description": "Création de vêtements réalistes ou stylisés dans marvelous et récupération de tous els details pour mettre les habits dans un pipeline de jeux video ou d'animation.",
     "category": "Modelling / Texturing",
     "objective": "Enseigner un pipe complet pour les vêtements, du pattern Marvelous au mesh game/ciné prêt.",
     "tools": [
       "Marvelous Designer",
-      "ZBrush"
+      "ZBrush",
+      "blender/maya"
     ],
     "deliverables": [
       "1 tenue (haut simple + bas ou manteau) simulée, nettoyée et stylisée",
@@ -724,7 +728,9 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "moduleLabel": "MODULE",
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 7,
@@ -735,9 +741,8 @@ const COURSE_DATA = [
     "objective": "Créer un personnage stylisé complet en 3D. L'objectif est de capturer l'appeal, le dynamisme et les proportions du concept art lors du sculpt, puis de réaliser une retopologie propre (edge flow, quads) prête pour le rigging et l'animation faciale/corporelle.",
     "tools": [
       "ZBrush",
-      "Maya",
       "Substance Painter",
-      "Substance Designer"
+      "blender/maya"
     ],
     "deliverables": [
       "Fichier ZBrush (.zpr) avec le High Poly organisé par SubTools",
@@ -812,7 +817,8 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 9,
@@ -899,7 +905,8 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 10,
@@ -963,13 +970,14 @@ const COURSE_DATA = [
     "rendus": [],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 11,
     "week": 10,
     "title": "Handpaint",
-    "category": "modeling",
+    "category": "Modelling/ Texturing/ lookdev",
     "description": "",
     "objective": "Comprendre et maîtriser la manipulation de la World Space Normal via le hand painting dans Substance Painter. L'objectif est de fausser l'éclairage pour donner un aspect \"peinture traditionnelle\" (brush strokes) dynamique qui réagit de manière stylisée à la lumière dans des moteurs de rendu temps réel ou offline.",
     "tools": [
@@ -1057,13 +1065,14 @@ const COURSE_DATA = [
     "colors": {},
     "heights": {
       "deliverablesCard": ""
-    }
+    },
+    "classLabel": "ANIM / JV"
   },
   {
     "id": 12,
     "week": 11,
     "title": "Substance designer",
-    "category": "texturing",
+    "category": "Texturing procedural",
     "description": "",
     "objective": "Comprendre la logique procédurale et maîtriser l'interface nodale de Substance Designer. L'objectif est de créer un matériau complet de A à Z, en gérant parfaitement la Height, la Normal, la Roughness et la Base Color, tout en gardant un graphe optimisé et paramétrable.",
     "tools": [
@@ -1140,7 +1149,8 @@ const COURSE_DATA = [
     ],
     "extraBlocks": [],
     "colors": {},
-    "heights": {}
+    "heights": {},
+    "classLabel": "ANIM / JV"
   }
 ];
 
@@ -1260,6 +1270,8 @@ function renderModuleDetail() {
                     ${m.moduleLabel||'Module'} ${m.id}
                 </span>
                 <span class="text-[#4a3426]/40 text-sm font-medium">| ${m.weekLabel||'Semaine'} ${m.week}</span>
+                ${m.category?`<span class="text-[#4a3426]/40 text-sm font-medium">| ${m.category}</span>`:''}
+                ${m.classLabel?`<span class="ml-auto inline-flex items-center gap-2 px-4 py-1.5 bg-[#4a3426] text-[#cfa848] rounded-full text-sm font-bold uppercase tracking-wider border border-[#cfa848]/40">${m.classLabel}</span>`:''}
             </div>
             <h1 class="text-4xl md:text-5xl font-black text-[#4a3426] mb-4" style="line-height:1.2;${(m.colors&&m.colors.title)?'color:'+m.colors.title+';':''}">${m.title}</h1>
             <p class="text-lg text-[#5d4231] max-w-2xl leading-relaxed" style="${(m.colors&&m.colors.description)?'color:'+m.colors.description:'' }">${m.description}</p>
@@ -1306,7 +1318,7 @@ function renderModuleDetail() {
         <!-- Rendu Étudiants Section -->
         <div class="mt-10">
             <div class="banner-gradient">
-                <h2 class="text-4xl md:text-5xl font-black text-[#4a3426] mb-3" style="line-height: 1.2;">Rendu Étudiants</h2>
+                <h2 class="text-4xl md:text-5xl font-black text-[#4a3426] mb-3" style="line-height: 1.2;">${SITE_SETTINGS.labelRendus||'Rendu Étudiants'}</h2>
                 <p class="text-lg text-[#5d4231] font-light">Une sélection de rendus. Cliquez pour agrandir.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1462,7 +1474,7 @@ function openGallery(moduleId) {
     const m = COURSE_DATA.find(mod => mod.id === moduleId);
     if (!m || !m.rendus) return;
     const grid = document.getElementById('galleryGrid');
-    document.getElementById('galleryTitle').textContent = 'Rendu Étudiants — ' + m.title;
+    document.getElementById('galleryTitle').textContent = (SITE_SETTINGS.labelRendus||'Rendu Étudiants') + ' — ' + m.title;
     grid.innerHTML = m.rendus.map(r => {
         const safe = r.image.replace(/'/g, "\\'");
         return `<div onclick="openLightbox('${safe}')" style="width:200px;cursor:pointer;flex:0 0 200px;">
