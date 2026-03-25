@@ -47,18 +47,15 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
-                    <span class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Syllabus Interactif</span>
+                    <h1 id="nav-title" class="text-[#f8f1e0] font-bold text-lg leading-none">3D Masterclass</h1>
+                    <span id="nav-subtitle" class="text-xs text-[#cfa848] font-bold tracking-wider uppercase">Syllabus Interactif</span>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="orgButton" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all duration-200 border border-[#b8922e] shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <span class="text-sm text-[#4a3426] font-bold">Organisation</span>
-                </button>
+                <div id="nav-pages" class="flex items-center gap-2"></div>
                 <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
-                    <span class="text-sm text-[#f8f1e0] font-medium hidden sm:inline">Parcours Pro &bull; 10 Semaines</span>
+                    <span id="nav-badge" class="text-sm text-[#f8f1e0] font-medium hidden sm:inline">Parcours Pro &bull; 10 Semaines</span>
                 </div>
             </div>
         </div>
@@ -128,112 +125,58 @@
         </div>
     </div>
 
-    <!-- Organization Modal -->
-    <div id="orgModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3426]/70 backdrop-blur-sm hidden">
-        <div class="bg-[#f8f1e0] border border-[#eaddcf] rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden relative">
-            <!-- Header -->
-            <div class="bg-[#4a3426] px-6 py-5 flex items-center justify-between border-b-4 border-[#cfa848]">
-                <div class="flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <h2 class="text-2xl font-bold text-[#f8f1e0]">Organisation des Cours</h2>
-                </div>
-                <button id="closeModal" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f8f1e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-
-            <!-- Content -->
-            <div class="p-8 space-y-8">
-                <p class="text-[#5d4231] text-lg leading-relaxed">
-                    La formation est organisée pour maximiser votre apprentissage avec un accompagnement quotidien structuré.
-                </p>
-
-                <!-- Schedule Cards -->
-                <div class="space-y-4">
-                    <!-- Live Course Card -->
-                    <div class="bg-white border border-[#eaddcf] rounded-xl p-6 hover:border-[#cfa848] transition-all shadow-sm">
-                        <div class="flex items-start gap-4">
-                            <div class="bg-[#cfa848] p-3 rounded-lg shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-[#4a3426] mb-2">Cours Live - 2h en journée</h3>
-                                <p class="text-[#5d4231] leading-relaxed mb-3">
-                                    Chaque jour, 2 heures de cours en direct avec démonstrations pratiques et explications détaillées.
-                                </p>
-                                <div class="flex items-center gap-2 text-[#cfa848] text-sm">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="font-medium text-[#4a3426]">Vidéo du cours disponible pour révision</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Q&A Throughout Day -->
-                    <div class="bg-white border border-[#eaddcf] rounded-xl p-6 hover:border-[#cfa848] transition-all shadow-sm">
-                        <div class="flex items-start gap-4">
-                            <div class="bg-[#4a3426] p-3 rounded-lg shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-[#4a3426] mb-2">Questions Durant la Journée</h3>
-                                <p class="text-[#5d4231] leading-relaxed">
-                                    Posez vos questions à tout moment pendant votre pratique. Échanges continus sur le forum dédié et support asynchrone.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Follow-up Session -->
-                    <div class="bg-white border border-[#eaddcf] rounded-xl p-6 hover:border-[#cfa848] transition-all shadow-sm">
-                        <div class="flex items-start gap-4">
-                            <div class="bg-[#cfa848] p-3 rounded-lg shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-[#4a3426] mb-2">Suivi en Fin de Journée - 1h</h3>
-                                <p class="text-[#5d4231] leading-relaxed mb-3">
-                                    Session d'accompagnement de 1 heure pour répondre à vos questions, débloquer les difficultés rencontrées et valider votre progression.
-                                </p>
-                                <div class="flex items-center gap-2 text-[#cfa848] text-sm">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="font-medium text-[#4a3426]">Feedback personnalisé sur votre travail</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Summary Banner -->
-                <div class="bg-[#eaddcf] border border-[#cfa848]/40 rounded-xl p-6">
-                    <div class="text-center">
-                        <p class="text-lg font-semibold text-[#4a3426] mb-2">
-                            📚 Format Quotidien = 3h d'encadrement 
-                        </p>
-                        <p class="text-[#5d4231] text-sm">
-                            2h de cours live + 1h de suivi personnalisé + support continu
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="bg-[#eaddcf] px-6 py-4 flex justify-end border-t border-[#cfa848]/30">
-                <button id="closeModalBtn" class="px-6 py-2 bg-[#cfa848] hover:bg-[#b8922e] text-[#4a3426] font-bold rounded-lg transition-all shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5">
-                    Fermer
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Dynamic page modals rendered by JS -->
+    <div id="page-modals-container"></div>
 
 </div>
 
 <script>
 // ========================== DATA ==========================
+const SITE_SETTINGS = {
+  "siteTitle": "3D Syllabus",
+  "siteSubtitle": "Syllabus Interactif",
+  "siteBadge": "Cours • 11 Semaines",
+  "pages": [
+    {
+      "id": "page_1",
+      "buttonLabel": "Organisation",
+      "buttonIcon": "calendar",
+      "title": "Organisation des Cours",
+      "description": "La formation est organisée pour maximiser votre apprentissage avec un accompagnement quotidien structuré.",
+      "cards": [
+        {
+          "id": "card_1",
+          "title": "Cours Live - 2h en journée",
+          "description": "Chaque jour, 2 heures de cours en direct avec démonstrations pratiques et explications détaillées.",
+          "badge": "Vidéo du cours disponible pour révision",
+          "icon": "video",
+          "iconBg": "gold",
+          "size": "M"
+        },
+        {
+          "id": "card_2",
+          "title": "Questions Durant la Journée",
+          "description": "Posez vos questions à tout moment pendant votre pratique. Échanges continus sur le forum dédié et support asynchrone.",
+          "badge": "",
+          "icon": "chat",
+          "iconBg": "brown",
+          "size": "M"
+        },
+        {
+          "id": "card_3",
+          "title": "Suivi en Fin de Journée - 1h",
+          "description": "Session d’accompagnement de 1 heure pour répondre à vos questions, débloquer les difficultés rencontrées et valider votre progression.",
+          "badge": "Feedback personnalisé sur votre travail",
+          "icon": "users",
+          "iconBg": "gold",
+          "size": "M"
+        }
+      ],
+      "summaryTitle": "📚 Format Quotidien = 3h d’encadrement",
+      "summaryText": "2h de cours live + 1h de suivi personnalisé + support continu"
+    }
+  ]
+};
 const COURSE_DATA = [
   {
     "id": 1,
@@ -241,7 +184,7 @@ const COURSE_DATA = [
     "title": "Box modeling « Fortiche »",
     "description": "Introduction au hardsurface stylisé avec une topologie propre.",
     "category": "workflow",
-    "objective": "Créer un asset hardsurface stylisé détaillé (weapons, bâtiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé à la manière des studios d'animation.",
+    "objective": "Créer un asset hardsurface stylisé détaillé (weapons, bâtiments, artefacts, environnement) avec topo clean, optimisée et prête pour un texturing PBR et stylisé à la manière des studios d'animation avec un pipe box modelling (fortiche, Mikros illumination)",
     "tools": [
       "Maya",
       "Blender"
@@ -281,7 +224,7 @@ const COURSE_DATA = [
         "title": "UVs & Vérification",
         "tasks": [
           "UVs (cuts logiques, texel density, UDIM si nécessaire)",
-          "Vérification des smoothing, tests rapides dans Substance"
+          "Tests rapides dans Substance"
         ]
       },
       {
@@ -305,15 +248,28 @@ const COURSE_DATA = [
         "student": "Luc Reynal",
         "image": "images/Box_modelling/luc-reynal.jpg",
         "zoom": 1,
-        "panX": -10,
-        "panY": -1
-      },
-      {
-        "student": "Sarah Larrieu",
-        "image": "images/Box_modelling/sarah-larrieu-manan.jpg",
-        "zoom": 1,
         "panX": 0,
         "panY": 0
+      },
+      {
+        "student": "Emma Piot",
+        "image": "images/rendus/module_1/emma-piot.jpg"
+      },
+      {
+        "student": "Lola Geron",
+        "image": "images/rendus/module_1/lola-geron-ig-_il-la_-layout002.webp"
+      },
+      {
+        "student": "Nathan Bariohay",
+        "image": "images/rendus/module_1/nathan-bariohay.jpg"
+      },
+      {
+        "student": "Quentin Schlicht",
+        "image": "images/rendus/module_1/quentin-schlicht.jpg"
+      },
+      {
+        "student": "Raphael Jourdain",
+        "image": "images/rendus/module_1/raphael-jourdain.png"
       }
     ],
     "extraBlocks": [],
@@ -324,7 +280,7 @@ const COURSE_DATA = [
   {
     "id": 2,
     "week": 2,
-    "title": "Substance Painting Asset",
+    "title": "Substance Asset Réaliste",
     "description": "Mise en texture PBR de l'asset créé au module précédent.",
     "category": "texturing",
     "objective": "Texturer en PBR l'asset hardsurface du Module 1 dans Substance 3D Painter, et produire des renders « portfolio ready ».",
@@ -406,7 +362,8 @@ const COURSE_DATA = [
       },
       {
         "student": "sarah larrieu manan retouches central cam 3 min",
-        "image": "images/rendus/module_2/sarah-larrieu-manan-retouches-central-cam-3-min_1774307200.jpg"
+        "image": "images/rendus/module_2/sarah-larrieu-manan-retouches-central-cam-3-min_1774307200.jpg",
+        "zoom": 1
       },
       {
         "student": "charlotte besnard",
@@ -427,8 +384,8 @@ const COURSE_DATA = [
     "id": 3,
     "week": 3,
     "title": "Passage Maya ↔ Blender",
-    "description": "Transition fluide entre les deux standards de l'industrie.",
-    "category": "workflow",
+    "description": "Transition fluide entre les deux standards de l'industrie. Blender prenant de plus en plus de place dans l'industrie il est important que les étudiants aient des notions sur le soft.",
+    "category": "modeling",
     "objective": "Rendre les étudiants à l'aise pour passer de Maya à Blender en modélisant un asset simple.",
     "tools": [
       "Maya",
@@ -443,16 +400,17 @@ const COURSE_DATA = [
         "day": 1,
         "title": "Philosophie & Bases",
         "tasks": [
-          "Techniques de base, options les plus utilisées et équivalences",
+          "Techniques de base, options les plus utilisées et équivalences maya blender.",
           "Navigation, gizmos, snapping, outils modeling (extrude, bevel, boolean)",
-          "Démarrage du blocking"
+          "Démarrage du blocking",
+          "installations addons gratuits utiles"
         ]
       },
       {
         "day": 2,
         "title": "Techniques Avancées",
         "tasks": [
-          "Techniques avancées pour détailler le mesh (addons)"
+          "Techniques avancées pour détailler le mesh"
         ]
       },
       {
@@ -478,7 +436,25 @@ const COURSE_DATA = [
         ]
       }
     ],
-    "rendus": [],
+    "rendus": [
+      {
+        "student": "Antoine Gerart",
+        "image": "images/rendus/module_3/Antoine_gerart.png",
+        "zoom": 1
+      },
+      {
+        "student": "Curtis Marin",
+        "image": "images/rendus/module_3/curtis_marin.png",
+        "panX": 78,
+        "panY": -1
+      },
+      {
+        "student": "Paul Cocoynacq",
+        "image": "images/rendus/module_3/paulcocoynacq.png",
+        "panX": 76,
+        "panY": 0
+      }
+    ],
     "extraBlocks": [],
     "colors": {},
     "heights": {}
@@ -543,19 +519,19 @@ const COURSE_DATA = [
     ],
     "rendus": [
       {
-        "student": "alban zaragoza 01",
+        "student": "alban zaragoza",
         "image": "images/rendus/module_4/alban-zaragoza-01.jpg",
         "zoom": 1,
         "panX": 0,
         "panY": 0
       },
       {
-        "student": "nikolas salon shot 4 1",
+        "student": "Nikolas salon",
         "image": "images/rendus/module_4/nikolas-salon-shot-4-1.jpg",
         "zoom": 1
       },
       {
-        "student": "ambre de casanove",
+        "student": "Ambre de casanove",
         "image": "images/rendus/module_4/ambre-de-casanove.jpg"
       },
       {
@@ -563,16 +539,16 @@ const COURSE_DATA = [
         "image": "images/rendus/module_4/Lucy_Papet_Game_ready_asset.jpg"
       },
       {
-        "student": "handpaint",
+        "student": "Jeanne Molierac",
         "image": "images/rendus/module_4/handpaint.jpg",
         "zoom": 1
       },
       {
-        "student": "nikolas salon shot1",
+        "student": "Nikolas Salon",
         "image": "images/rendus/module_4/nikolas-salon-shot1.jpg"
       },
       {
-        "student": "thibault de vaissiere vignette",
+        "student": "Thibaut Vignette",
         "image": "images/rendus/module_4/thibault-de-vaissiere-vignette.jpg"
       }
     ],
@@ -650,7 +626,7 @@ const COURSE_DATA = [
         "panY": -1
       },
       {
-        "student": "matis lorge",
+        "student": "Matis Lorge",
         "image": "images/rendus/module_5/matis-lorge-3.png"
       }
     ],
@@ -716,15 +692,15 @@ const COURSE_DATA = [
     ],
     "rendus": [
       {
-        "student": "alix vandermeersch",
+        "student": "Alix vandermeersch",
         "image": "images/rendus/module_6/alix-vandermeersch.jpg"
       },
       {
-        "student": "ambre de casanove",
+        "student": "Ambre de casanove",
         "image": "images/rendus/module_6/ambre_de_casanove.jpg"
       },
       {
-        "student": "raphael alves",
+        "student": "Raphael Alves",
         "image": "images/rendus/module_6/raphael-alves.jpg"
       }
     ],
@@ -798,20 +774,21 @@ const COURSE_DATA = [
     ],
     "rendus": [
       {
-        "student": "emilie morin",
-        "image": "images/rendus/module_7/emilie-morin.jpg"
+        "student": "Emilie Morin",
+        "image": "images/rendus/module_7/emilie-morin.jpg",
+        "zoom": 1
       },
       {
-        "student": "ilies abdou",
+        "student": "Ilies Abdou",
         "image": "images/rendus/module_7/ilies_abdou.jpg",
         "zoom": 1
       },
       {
-        "student": "maxence groyer",
+        "student": "Maxence Groyer",
         "image": "images/rendus/module_7/maxence-groyer.jpg"
       },
       {
-        "student": "maxime guinaudeau",
+        "student": "Maxime Guinaudeau",
         "image": "images/rendus/module_7/maxime-guinaudeau.jpg"
       }
     ],
@@ -874,31 +851,31 @@ const COURSE_DATA = [
     ],
     "rendus": [
       {
-        "student": "wan22 00017",
+        "student": "comfy_Ui_01",
         "image": "images/rendus/module_9/wan22_00017.png",
         "panX": 96,
         "panY": -1
       },
       {
-        "student": "ComfyUI 00006 ",
+        "student": "comfy_Ui_02",
         "image": "images/rendus/module_9/ComfyUI_00006_.png",
         "zoom": 1.35
       },
       {
-        "student": "ComfyUI 00644 ",
+        "student": "comfy_Ui_03",
         "image": "images/rendus/module_9/ComfyUI_00644_.png",
         "zoom": 1
       },
       {
-        "student": "ComfyUI 00611 ",
+        "student": "comfy_Ui_04",
         "image": "images/rendus/module_9/ComfyUI_00611_.png"
       },
       {
-        "student": "ComfyUI 00008 ",
+        "student": "comfy_Ui_05",
         "image": "images/rendus/module_9/ComfyUI_00008_.png"
       },
       {
-        "student": "ComfyUI 00003 ",
+        "student": "comfy_Ui_06",
         "image": "images/rendus/module_9/ComfyUI_00003_.png"
       }
     ],
@@ -1034,17 +1011,17 @@ const COURSE_DATA = [
     ],
     "rendus": [
       {
-        "student": "antoine bardon",
+        "student": "Antoine Bardon",
         "image": "images/rendus/module_11/antoine-bardon_1774313060.jpg",
         "zoom": 1
       },
       {
-        "student": "leo cirette",
+        "student": "Leo Cirette",
         "image": "images/rendus/module_11/leo_cirette.jpg",
         "zoom": 1
       },
       {
-        "student": "Luc reynal",
+        "student": "Luc Reynal",
         "image": "images/rendus/module_11/Luc_reynal.jpg",
         "zoom": 1,
         "panX": 0,
@@ -1141,10 +1118,6 @@ const COURSE_DATA = [
         "panX": 96,
         "panY": -3,
         "zoom": 1.05
-      },
-      {
-        "student": "alban zaragoza 02",
-        "image": "images/rendus/module_12/alban-zaragoza_02.jpg"
       }
     ],
     "extraBlocks": [],
@@ -1364,34 +1337,107 @@ function selectModule(id) {
 
 
 
+// ═══ PAGE ICONS ════════════════════════════════════════════════════════════
+const PAGE_ICONS={
+    calendar:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    video:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
+    chat:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    users:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    book:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    clock:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    star:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    check:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    lightbulb:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+    target:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+function pageIcon(name,size,color,sw){
+    const t=PAGE_ICONS[name]||PAGE_ICONS.calendar;
+    return t.replace(/W/g,size||24).replace(/C/g,color||'currentColor').replace(/SW/g,sw||'2');
+}
+const ICON_BG={gold:'#cfa848',brown:'#4a3426'};
+const ICON_STROKE={gold:'#4a3426',brown:'#cfa848'};
+const SIZE_MIN={S:'60px',M:'auto',L:'160px'};
+
+function renderNavPages(){
+    const c=document.getElementById('nav-pages');if(!c)return;
+    c.innerHTML=(SITE_SETTINGS.pages||[]).map(p=>`
+        <button onclick="openPageModal('${p.id}')" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all duration-200 border border-[#b8922e] shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5">
+            ${pageIcon(p.buttonIcon||'calendar',16,'#4a3426','2.5')}
+            <span class="text-sm text-[#4a3426] font-bold">${p.buttonLabel||'Page'}</span>
+        </button>
+    `).join('');
+}
+
+function renderPageModals(){
+    const c=document.getElementById('page-modals-container');if(!c)return;
+    const checkSvg='<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>';
+    c.innerHTML=(SITE_SETTINGS.pages||[]).map(p=>`
+    <div id="pageModal_${p.id}" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4a3426]/70 backdrop-blur-sm hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="bg-[#f8f1e0] border border-[#eaddcf] rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+            <div class="bg-[#4a3426] px-6 py-5 flex items-center justify-between border-b-4 border-[#cfa848]">
+                <div class="flex items-center gap-3">
+                    ${pageIcon(p.buttonIcon||'calendar',28,'#cfa848','2')}
+                    <h2 class="text-2xl font-bold text-[#f8f1e0]">${p.title||''}</h2>
+                </div>
+                <button onclick="document.getElementById('pageModal_${p.id}').classList.add('hidden')" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f8f1e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="p-8 space-y-8 overflow-y-auto">
+                ${p.description?`<p class="text-[#5d4231] text-lg leading-relaxed">${p.description}</p>`:''}
+                <div class="space-y-4">
+                    ${(p.cards||[]).map(card=>{
+                        const bg=ICON_BG[card.iconBg]||'#cfa848';
+                        const stroke=ICON_STROKE[card.iconBg]||'#4a3426';
+                        const mh=SIZE_MIN[card.size]||'auto';
+                        return `<div class="bg-white border border-[#eaddcf] rounded-xl p-6 hover:border-[#cfa848] transition-all shadow-sm" style="min-height:${mh}">
+                            <div class="flex items-start gap-4">
+                                <div style="background:${bg}" class="p-3 rounded-lg shrink-0">${pageIcon(card.icon||'calendar',24,stroke,'2')}</div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-[#4a3426] mb-2">${card.title||''}</h3>
+                                    <p class="text-[#5d4231] leading-relaxed${card.badge?' mb-3':''}">${card.description||''}</p>
+                                    ${card.badge?`<div class="flex items-center gap-2 text-[#cfa848] text-sm">${checkSvg}<span class="font-medium text-[#4a3426]">${card.badge}</span></div>`:''}
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+                ${(p.summaryTitle||p.summaryText)?`
+                <div class="bg-[#eaddcf] border border-[#cfa848]/40 rounded-xl p-6">
+                    <div class="text-center">
+                        ${p.summaryTitle?`<p class="text-lg font-semibold text-[#4a3426] mb-2">${p.summaryTitle}</p>`:''}
+                        ${p.summaryText?`<p class="text-[#5d4231] text-sm">${p.summaryText}</p>`:''}
+                    </div>
+                </div>`:''}
+            </div>
+            <div class="bg-[#eaddcf] px-6 py-4 flex justify-end border-t border-[#cfa848]/30">
+                <button onclick="document.getElementById('pageModal_${p.id}').classList.add('hidden')" class="px-6 py-2 bg-[#cfa848] hover:bg-[#b8922e] text-[#4a3426] font-bold rounded-lg transition-all shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5">Fermer</button>
+            </div>
+        </div>
+    </div>
+    `).join('');
+}
+
+function openPageModal(id){
+    const el=document.getElementById('pageModal_'+id);
+    if(el) el.classList.remove('hidden');
+}
+
 // Initial render
+(function applySiteSettings(){
+    const s=SITE_SETTINGS;
+    const t=document.getElementById('nav-title');
+    const st=document.getElementById('nav-subtitle');
+    const b=document.getElementById('nav-badge');
+    if(t&&s.siteTitle) t.textContent=s.siteTitle;
+    if(st&&s.siteSubtitle) st.textContent=s.siteSubtitle;
+    if(b&&s.siteBadge) b.textContent=s.siteBadge;
+    if(s.siteTitle) document.title=s.siteTitle+' - Programme de Cours';
+    renderNavPages();
+    renderPageModals();
+})();
 renderModuleList();
 renderModuleDetail();
-
-// Modal management
-const orgButton = document.getElementById('orgButton');
-const orgModal = document.getElementById('orgModal');
-const closeModal = document.getElementById('closeModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-
-orgButton.addEventListener('click', () => {
-    orgModal.classList.remove('hidden');
-});
-
-closeModal.addEventListener('click', () => {
-    orgModal.classList.add('hidden');
-});
-
-closeModalBtn.addEventListener('click', () => {
-    orgModal.classList.add('hidden');
-});
-
-// Close modal when clicking outside
-orgModal.addEventListener('click', (e) => {
-    if (e.target === orgModal) {
-        orgModal.classList.add('hidden');
-    }
-});
 
 // ═══ GALERIE ═══════════════════════════════════════════════════════════════
 function openGallery(moduleId) {

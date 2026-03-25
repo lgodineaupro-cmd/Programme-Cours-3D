@@ -134,13 +134,12 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <!-- Editable Organisation button -->
-            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#cfa848] border border-[#b8922e]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a3426" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <input id="ed-orgButton" type="text" value="Organisation"
-                       class="bg-transparent text-sm text-[#4a3426] font-bold border-none outline-none w-28 placeholder-[#4a3426]/40 hover:bg-black/5 focus:bg-black/5 rounded px-1 -ml-1 transition"
-                       placeholder="Bouton" oninput="onSettingChange()">
-            </div>
+            <!-- Dynamic page buttons rendered by JS -->
+            <div id="ed-nav-pages" class="flex items-center gap-2"></div>
+            <!-- Add page button -->
+            <button onclick="addPage()" class="flex items-center justify-center w-8 h-8 rounded-lg border-2 border-dashed border-[#cfa848]/40 hover:border-[#cfa848] text-[#cfa848]/50 hover:text-[#cfa848] transition-all" title="Nouvelle page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
             <!-- Editable Badge -->
             <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#3a2418] border border-[#cfa848]/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cfa848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
@@ -196,6 +195,21 @@
     </div>
 </main>
 
+<!-- Page Editor Modal -->
+<div id="pageEditorModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#4a3426]/80 backdrop-blur-sm hidden" onclick="if(event.target===this)closePageEditor()">
+    <div class="bg-[#f8f1e0] border border-[#eaddcf] rounded-2xl max-w-3xl w-full shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+        <div id="peHeader" class="bg-[#4a3426] px-6 py-4 flex items-center justify-between border-b-4 border-[#cfa848]"></div>
+        <div id="peContent" class="p-6 space-y-6 overflow-y-auto flex-1"></div>
+        <div class="bg-[#eaddcf] px-6 py-3 flex items-center justify-between border-t border-[#cfa848]/30">
+            <button onclick="deleteCurrentPage()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 13.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 6"/></svg>
+                Supprimer cette page
+            </button>
+            <button onclick="closePageEditor()" class="px-5 py-2 bg-[#cfa848] hover:bg-[#b8922e] text-[#4a3426] font-bold rounded-lg transition-all shadow-[0_3px_0_rgb(140,100,20)] hover:shadow-none hover:translate-y-0.5 text-sm">Fermer</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // ════ ICONS ══════════════════════════════════════════════════════════════════
 const ICONS={
@@ -229,7 +243,8 @@ function getModuleIcon(cat,title){
 
 // ════ STATE ══════════════════════════════════════════════════════════════════
 let modules=[], currentId=null, dirty=false;
-let siteSettings={siteTitle:'3D Masterclass',siteSubtitle:'Syllabus Interactif',orgButton:'Organisation',siteBadge:'Parcours Pro • 10 Semaines'};
+let siteSettings={siteTitle:'3D Masterclass',siteSubtitle:'Syllabus Interactif',siteBadge:'Parcours Pro • 10 Semaines',pages:[]};
+let editingPageId=null;
 let undoStack=[]; const UNDO_LIMIT=100;
 
 // ════ COLOR PICKER ═══════════════════════════════════════════════════════════
@@ -411,15 +426,198 @@ async function init(){
 function applySiteSettings(){
     document.getElementById('ed-siteTitle').value=siteSettings.siteTitle||'';
     document.getElementById('ed-siteSubtitle').value=siteSettings.siteSubtitle||'';
-    document.getElementById('ed-orgButton').value=siteSettings.orgButton||'';
     document.getElementById('ed-siteBadge').value=siteSettings.siteBadge||'';
+    renderEditorPageButtons();
 }
 function onSettingChange(){
     siteSettings.siteTitle=document.getElementById('ed-siteTitle').value;
     siteSettings.siteSubtitle=document.getElementById('ed-siteSubtitle').value;
-    siteSettings.orgButton=document.getElementById('ed-orgButton').value;
     siteSettings.siteBadge=document.getElementById('ed-siteBadge').value;
     markDirty();
+}
+
+// ════ PAGE ICONS ═════════════════════════════════════════════════════════════
+const PAGE_ICONS={
+    calendar:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    video:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
+    chat:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    users:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    book:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    clock:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    star:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    check:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    lightbulb:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+    target:'<svg xmlns="http://www.w3.org/2000/svg" width="W" height="W" viewBox="0 0 24 24" fill="none" stroke="C" stroke-width="SW" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+const PI_NAMES=Object.keys(PAGE_ICONS);
+function pi(name,size,color,sw){const t=PAGE_ICONS[name]||PAGE_ICONS.calendar;return t.replace(/W/g,size||24).replace(/C/g,color||'currentColor').replace(/SW/g,sw||'2');}
+const IBGS={gold:'#cfa848',brown:'#4a3426'};
+const ISTK={gold:'#4a3426',brown:'#cfa848'};
+
+function renderEditorPageButtons(){
+    const c=document.getElementById('ed-nav-pages');if(!c)return;
+    c.innerHTML=(siteSettings.pages||[]).map(p=>`
+        <button onclick="openPageEditor('${p.id}')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#cfa848] hover:bg-[#b8922e] transition-all border border-[#b8922e] text-sm text-[#4a3426] font-bold">
+            ${pi(p.buttonIcon||'calendar',14,'#4a3426','2.5')}
+            ${escHtml(p.buttonLabel||'Page')}
+        </button>
+    `).join('');
+}
+
+function getPage(id){return(siteSettings.pages||[]).find(p=>p.id===id);}
+
+function openPageEditor(id){
+    editingPageId=id;
+    const p=getPage(id);if(!p)return;
+    renderPageEditorContent(p);
+    document.getElementById('pageEditorModal').classList.remove('hidden');
+}
+function closePageEditor(){
+    document.getElementById('pageEditorModal').classList.add('hidden');
+    editingPageId=null;
+    renderEditorPageButtons();
+}
+
+function renderPageEditorContent(p){
+    const hdr=document.getElementById('peHeader');
+    const cnt=document.getElementById('peContent');
+    // Header
+    hdr.innerHTML=`
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="relative">
+                <button onclick="togglePageIconPicker('btn')" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition" title="Choisir icône bouton">
+                    ${pi(p.buttonIcon||'calendar',22,'#cfa848','2')}
+                </button>
+                <div id="peIconPickerBtn" class="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-[#eaddcf] p-2 grid grid-cols-5 gap-1 hidden z-10" style="min-width:180px">
+                    ${PI_NAMES.map(n=>`<button onclick="setPageIcon('${n}','btn')" class="p-2 rounded hover:bg-[#eaddcf] transition flex items-center justify-center${p.buttonIcon===n?' bg-[#eaddcf]':''}" title="${n}">${pi(n,18,'#4a3426','2')}</button>`).join('')}
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <input type="text" value="${escAttr(p.buttonLabel||'')}" onchange="peField('buttonLabel',this.value)" class="bg-transparent text-[#f8f1e0] font-bold text-sm border-none outline-none w-full placeholder-[#f8f1e0]/40 hover:bg-white/10 focus:bg-white/10 rounded px-1 transition" placeholder="Libellé bouton">
+                <input type="text" value="${escAttr(p.title||'')}" onchange="peField('title',this.value)" class="bg-transparent text-[#cfa848] text-xs border-none outline-none w-full placeholder-[#cfa848]/40 hover:bg-white/10 focus:bg-white/10 rounded px-1 transition" placeholder="Titre de la page">
+            </div>
+        </div>
+        <button onclick="closePageEditor()" class="p-2 hover:bg-white/10 rounded-lg transition-colors shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f8f1e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>`;
+
+    // Content
+    cnt.innerHTML=`
+        <div>
+            <label class="text-xs font-bold text-[#4a3426]/50 uppercase tracking-wider">Description</label>
+            <textarea onchange="peField('description',this.value)" class="w-full mt-1 p-3 rounded-lg border border-[#eaddcf] focus:border-[#cfa848] outline-none text-sm text-[#5d4231] resize-y" rows="2" placeholder="Description de la page…">${escHtml(p.description||'')}</textarea>
+        </div>
+        <div>
+            <label class="text-xs font-bold text-[#4a3426]/50 uppercase tracking-wider mb-2 block">Cartes</label>
+            <div id="peCards" class="space-y-3">
+                ${(p.cards||[]).map((c,i)=>renderPageCard(c,i)).join('')}
+            </div>
+            <button onclick="addPageCard()" class="mt-3 w-full flex justify-center items-center gap-2 py-2 rounded-xl border-2 border-dashed border-[#cfa848]/30 text-[#4a3426]/40 hover:border-[#cfa848] hover:text-[#cfa848] transition-all text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Ajouter une carte
+            </button>
+        </div>
+        <div class="bg-[#eaddcf] rounded-xl p-4 space-y-2">
+            <label class="text-xs font-bold text-[#4a3426]/50 uppercase tracking-wider">Bandeau résumé</label>
+            <input type="text" value="${escAttr(p.summaryTitle||'')}" onchange="peField('summaryTitle',this.value)" class="w-full p-2 rounded-lg border border-[#cfa848]/30 focus:border-[#cfa848] outline-none text-sm font-semibold text-[#4a3426]" placeholder="Titre résumé…">
+            <input type="text" value="${escAttr(p.summaryText||'')}" onchange="peField('summaryText',this.value)" class="w-full p-2 rounded-lg border border-[#cfa848]/30 focus:border-[#cfa848] outline-none text-sm text-[#5d4231]" placeholder="Sous-texte résumé…">
+        </div>`;
+}
+
+function renderPageCard(c,i){
+    const bg=IBGS[c.iconBg]||'#cfa848';
+    const st=ISTK[c.iconBg]||'#4a3426';
+    const sizes=['S','M','L'];
+    return `<div class="bg-white border border-[#eaddcf] rounded-xl p-4 hover:border-[#cfa848]/50 transition group">
+        <div class="flex items-start gap-3">
+            <div class="flex flex-col items-center gap-1">
+                <div class="relative">
+                    <button onclick="toggleCardIconPicker(${i})" style="background:${bg}" class="p-2 rounded-lg cursor-pointer hover:opacity-80 transition" title="Changer icône">${pi(c.icon||'calendar',20,st,'2')}</button>
+                    <div id="peCardIconPicker_${i}" class="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-[#eaddcf] p-2 grid grid-cols-5 gap-1 hidden z-10" style="min-width:180px">
+                        ${PI_NAMES.map(n=>`<button onclick="setCardIcon(${i},'${n}')" class="p-1.5 rounded hover:bg-[#eaddcf] transition flex items-center justify-center${c.icon===n?' bg-[#eaddcf]':''}" title="${n}">${pi(n,16,'#4a3426','2')}</button>`).join('')}
+                    </div>
+                </div>
+                <button onclick="toggleCardBg(${i})" class="text-[10px] font-bold px-1.5 py-0.5 rounded border border-[#eaddcf] hover:border-[#cfa848] transition" title="Alterner fond icône">${c.iconBg==='brown'?'🟤':'🟡'}</button>
+            </div>
+            <div class="flex-1 min-w-0 space-y-1.5">
+                <input type="text" value="${escAttr(c.title||'')}" onchange="peCardField(${i},'title',this.value)" class="w-full font-bold text-[#4a3426] text-sm border-none outline-none bg-transparent hover:bg-[#eaddcf]/50 focus:bg-[#eaddcf]/50 rounded px-1 transition" placeholder="Titre de la carte">
+                <textarea onchange="peCardField(${i},'description',this.value)" class="w-full text-sm text-[#5d4231] border-none outline-none bg-transparent hover:bg-[#eaddcf]/50 focus:bg-[#eaddcf]/50 rounded px-1 resize-y transition" rows="2" placeholder="Description…">${escHtml(c.description||'')}</textarea>
+                <div class="flex items-center gap-1">
+                    <span class="text-[10px] text-[#cfa848]">✓</span>
+                    <input type="text" value="${escAttr(c.badge||'')}" onchange="peCardField(${i},'badge',this.value)" class="flex-1 text-xs text-[#4a3426] border-none outline-none bg-transparent hover:bg-[#eaddcf]/50 focus:bg-[#eaddcf]/50 rounded px-1 transition" placeholder="Badge (optionnel)">
+                </div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <div class="flex gap-0.5">${sizes.map(s=>`<button onclick="setCardSize(${i},'${s}')" class="text-[10px] font-bold px-1.5 py-0.5 rounded transition ${c.size===s?'bg-[#cfa848] text-[#4a3426]':'bg-[#eaddcf] text-[#4a3426]/50 hover:bg-[#cfa848]/30'}">${s}</button>`).join('')}</div>
+                <button onclick="removePageCard(${i})" class="p-1 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition opacity-0 group-hover:opacity-100" title="Supprimer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="m19 6-.867 13.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 6"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function peField(key,val){
+    const p=getPage(editingPageId);if(!p)return;
+    pushUndo(); p[key]=val; markDirty();
+}
+function peCardField(i,key,val){
+    const p=getPage(editingPageId);if(!p||!p.cards[i])return;
+    pushUndo(); p.cards[i][key]=val; markDirty();
+}
+function addPageCard(){
+    const p=getPage(editingPageId);if(!p)return;
+    pushUndo();
+    p.cards=p.cards||[];
+    p.cards.push({id:'card_'+Date.now(),title:'',description:'',badge:'',icon:'calendar',iconBg:'gold',size:'M'});
+    markDirty(); renderPageEditorContent(p);
+}
+function removePageCard(i){
+    const p=getPage(editingPageId);if(!p||!p.cards)return;
+    pushUndo(); p.cards.splice(i,1); markDirty(); renderPageEditorContent(p);
+}
+function setCardSize(i,s){
+    const p=getPage(editingPageId);if(!p||!p.cards[i])return;
+    pushUndo(); p.cards[i].size=s; markDirty(); renderPageEditorContent(p);
+}
+function setCardIcon(i,name){
+    const p=getPage(editingPageId);if(!p||!p.cards[i])return;
+    pushUndo(); p.cards[i].icon=name; markDirty();
+    document.getElementById('peCardIconPicker_'+i)?.classList.add('hidden');
+    renderPageEditorContent(p);
+}
+function toggleCardBg(i){
+    const p=getPage(editingPageId);if(!p||!p.cards[i])return;
+    pushUndo(); p.cards[i].iconBg=p.cards[i].iconBg==='brown'?'gold':'brown'; markDirty(); renderPageEditorContent(p);
+}
+function toggleCardIconPicker(i){
+    document.querySelectorAll('[id^="peCardIconPicker_"]').forEach(el=>el.classList.add('hidden'));
+    document.getElementById('peCardIconPicker_'+i)?.classList.toggle('hidden');
+}
+function togglePageIconPicker(type){
+    const el=document.getElementById('peIconPicker'+(type==='btn'?'Btn':''));
+    if(el)el.classList.toggle('hidden');
+}
+function setPageIcon(name,type){
+    const p=getPage(editingPageId);if(!p)return;
+    pushUndo();
+    if(type==='btn')p.buttonIcon=name;
+    markDirty(); renderPageEditorContent(p); renderEditorPageButtons();
+    document.getElementById('peIconPicker'+(type==='btn'?'Btn':''))?.classList.add('hidden');
+}
+function addPage(){
+    pushUndo();
+    siteSettings.pages=siteSettings.pages||[];
+    const id='page_'+Date.now();
+    siteSettings.pages.push({id,buttonLabel:'Nouvelle page',buttonIcon:'book',title:'Nouvelle Page',description:'',cards:[],summaryTitle:'',summaryText:''});
+    markDirty(); renderEditorPageButtons(); openPageEditor(id);
+}
+function deleteCurrentPage(){
+    if(!editingPageId)return;
+    if(!confirm('Supprimer cette page ?'))return;
+    pushUndo();
+    siteSettings.pages=(siteSettings.pages||[]).filter(p=>p.id!==editingPageId);
+    markDirty(); closePageEditor();
 }
 
 // ════ HELPERS ════════════════════════════════════════════════════════════════
